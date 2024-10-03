@@ -2,12 +2,26 @@
 
 #Paths Relativos
 
-# Carpeta de descarga y lectura de datos de precipitación de las EMAs desde la base de datos del INA
+# Carpetas de lectura de bases de datos de precipitación observadas y simuladas
+## Carpeta de descarga y lectura de datos de precipitación de las EMAs desde la base de datos del INA
 /Prec_Obs_EMAs_INA 
-
+##
 /Prec_Obs_RadarQPE_SMN
+##
 /Prec_Obs_SateliteQPE_SMN
-/Prec_
+##
+/Prec_Sim_Nowcasting_SMN
+##
+/Prec_Sim_WRF_SMN
 
-
-/
+# Carpeta de simulaciones de modelos SWMM
+##
+/SWMM_Obs_EMAs_INA 
+##
+/SWMM_Obs_RadarQPE_SMN
+##
+/SWMM_Obs_SateliteQPE_SMN
+##
+/SWMM_Sim_Nowcasting_SMN
+##
+/SWMM_Sim_WRF_SMN
