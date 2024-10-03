@@ -1,0 +1,13 @@
+# Definición de variables de entorno del sistema de previsión de inundaciones urbanas - PREVENIR
+
+#Paths Relativos
+
+# Carpeta de descarga y lectura de datos de precipitación de las EMAs desde la base de datos del INA
+/Prec_Obs_EMAs_INA 
+
+/Prec_Obs_RadarQPE_SMN
+/Prec_Obs_SateliteQPE_SMN
+/Prec_
+
+
+/
