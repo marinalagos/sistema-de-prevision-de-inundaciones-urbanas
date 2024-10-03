@@ -1,6 +1,13 @@
 # Definición de variables de entorno del sistema de previsión de inundaciones urbanas - PREVENIR
 
-#Paths Relativos
+# Paths Relativos
+
+# Carpeta con los archivos base de las corridas SWMM: ejecutable - .inp editable - Slurm - HotStartEmergencia
+/Carpeta_Base_SWMM
+
+# Carpeta con todos los códigos en python
+/Codigos
+/Codigos/Funciones
 
 # Carpetas de lectura de bases de datos de precipitación observadas y simuladas
 ## Carpeta de descarga y lectura de datos de precipitación de las EMAs desde la base de datos del INA
@@ -25,3 +32,20 @@
 /SWMM_Sim_Nowcasting_SMN
 ##
 /SWMM_Sim_WRF_SMN
+
+
+# Codigos Python
+
+## 0-0-Main
+### El Main controla premanentemente el Config para actualizar el crontab y otros archivos de relevancia
+## 0-1-AsingacionPluvioSubcuenca.py
+
+## 1-1-Prec_Obs_EMAs_INA.py
+## 1-2-Prec_Obs_RadarQPE_SMN.py
+## 1-3-Prec_Sim_Nowcasting_SMN.py
+## 1-4-Prec_Sim_WRF_SMN.py
+
+## 
+##
+##
+##
