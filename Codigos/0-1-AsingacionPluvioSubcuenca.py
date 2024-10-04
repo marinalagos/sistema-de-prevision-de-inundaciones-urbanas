@@ -31,17 +31,17 @@ parser.add_argument('--nc_file',
 parser.add_argument('--inp_file_modificado', 
                     type = str, 
                     help = 'Ruta al archivo .inp a modificar. Si no se define, se sobrescribe el .inp original.', 
-                    default='False')
+                    default ='False')
 
 parser.add_argument('--crs_SWMM', 
                     type = int, 
                     help = 'Código EPSG del crs del modelo SWMM. Por defecto: 5347 (Posgar 2007 Faja 5)', 
-                    default= 5347)
+                    default = 5347)
 
 parser.add_argument('--crs_precipitacion', 
                     type = int, 
                     help = 'Código EPSG del crs del archivo de precipitación (.nc). Por defecto: 4326 (WGS84)', 
-                    default= 4326)
+                    default = 4326)
 
 # Parsear los argumentos
 args = parser.parse_args()
