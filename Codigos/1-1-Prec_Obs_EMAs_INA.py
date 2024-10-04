@@ -4,8 +4,7 @@ import json
 import os
 
 # DEFINIR PYTHONPATH (directorio raíz del repositorio)
-# Obtener el directorio del repositorio desde la variable de entorno (archivo ".env")
-repo_path = os.getenv('PYTHONPATH')
+repo_path = os.getenv('PYTHONPATH') # Obtener el directorio del repositorio desde la variable de entorno (archivo ".env")
 if repo_path:
     os.chdir(repo_path)
 
