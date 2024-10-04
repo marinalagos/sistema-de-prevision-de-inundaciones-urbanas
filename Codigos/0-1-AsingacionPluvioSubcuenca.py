@@ -34,6 +34,11 @@ parser.add_argument('--inp_file_modificado',
                     help = 'Ruta al archivo .inp a modificar. Si no se define, se sobrescribe el .inp original.', 
                     default ='False')
 
+parser.add_argument('--cell_cords', 
+                    type = str, 
+                    help = 'Ruta donde exportar las coordenadas de cada celda.', 
+                    default = 'Carpeta_base_SWMM/coordenadas_celdas.csv')
+
 parser.add_argument('--crs_SWMM', 
                     type = int, 
                     help = 'Código EPSG del crs del modelo SWMM. Por defecto: 5347 (Posgar 2007 Faja 5)', 
@@ -43,6 +48,7 @@ parser.add_argument('--crs_precipitacion',
                     type = int, 
                     help = 'Código EPSG del crs del archivo de precipitación (.nc). Por defecto: 4326 (WGS84)', 
                     default = 4326)
+                    
 
 # Parsear los argumentos
 args = parser.parse_args()
@@ -57,7 +63,14 @@ else:
 
 epsg_SWMM = args.crs_SWMM
 epsg_precipitacion = args.crs_precipitacion
+# AGREGAR CELL COORDS
 
+# inp_file = 'Carpeta_base_SWMM/model_base.inp'
+# nc_file = glob('Carpeta_base_SWMM/*.nc')[0]
+# inp_file_modificado = 'modelo_prueba.inp'
+# epsg_SWMM = 5347
+# epsg_precipitacion = 4326
+# path_cell_cords = 'Carpeta_base_SWMM/coordenadas_celdas.csv'
 
 
 # 2. DEFINIR SISTEMAS DE COORDENADAS
@@ -132,6 +145,8 @@ for lat in lats:
         # Almacena las coordenadas de la celda en el diccionario
         cell_coords[cell] = Point(lon, lat)
 
+df_cell_coords = pd.DataFrame(cell_coords.items(), columns=['ID', 'Coordinates'])
+df_cell_coords.to_csv(path_cell_cords, index=False)
 
 
 # 5. ASIGNACIÓN SUBCUENCA-CELDA

@@ -3,12 +3,24 @@ import requests
 import json
 import os
 
-# DEFINIR PYTHONPATH (directorio raíz del repositorio)
+# INPUTS:
+# 1. TimeStamp inicio
+# 2. TimeStamp final
+# 3. Grilla a usar
+# 4. Ids estaciones a consultar
+# 5. Path donde guardar el archivo de lluvia
+
+# OUTPUTS:
+# 1. Archivo de lluvia
+
+
+
+# 0. DEFINIR PYTHONPATH (directorio raíz del repositorio)
 repo_path = os.getenv('PYTHONPATH') # Obtener el directorio del repositorio desde la variable de entorno (archivo ".env")
 if repo_path:
     os.chdir(repo_path)
 
-# CONSULTA ARCHIVOS .json DE CREDENCIALES Y PARÁMETROS
+# 1. CONSULTAR ARCHIVOS .json DE CREDENCIALES Y PARÁMETROS
 
 with open('credenciales.json', 'r') as f:
     content = f.read()
