@@ -112,10 +112,33 @@ df_sub_cell = pd.DataFrame.from_dict(asignacion, orient='index')
 
 
 
-# MODIFICACIÓN DE TABLA DE SUBCUENCAS EN EL ARCHIVO .inp
+# 4. MODIFICACIÓN DE TABLA DE PLUVIOMETROS EN EL ARCHIVO .inp
+
+inicio = lines.index('[RAINGAGES]\n') + 3
+fin = lines.index('[SUBCATCHMENTS]\n') -1
+
+cell_names = df_sub_cell[0].unique()
+df_rainfall = pd.DataFrame()
+df_rainfall['Name'] = cell_names
+df_rainfall['Format'] = 'RAINFALL_FORMAT'
+df_rainfall['Interval'] = '0:10'
+df_rainfall['SCF'] = '1.0'
+df_rainfall['Source'] = 'FILE'
+df_rainfall['filename'] = f'pp.txt'
+df_rainfall['raingage'] = cell_names
+df_rainfall['unit'] = 'MM'
+
+str_raingages = df_rainfall.to_string(index=False, header=False, justify='left')
+
+lines = lines[:inicio] + [str_raingages] + ['\n'] + lines[fin:]
+
+
+
+# 5. MODIFICACIÓN DE TABLA DE SUBCUENCAS EN EL ARCHIVO .inp
 # Extracción de la tabla de subcuencas del archivo .inp
 inicio = lines.index('[SUBCATCHMENTS]\n') + 3
 fin = lines.index('[SUBAREAS]\n') - 1
+
 lines_subcuencas = lines[inicio:fin]
 df_subcuencas = pd.DataFrame([i.split() for i in lines_subcuencas], columns=['Name', 'RainGage', 'Outlet', 'Area', 'Imperv', 'Width', 'Slope', 'CurbLen'])
 df_subcuencas = df_subcuencas.set_index('Name')
@@ -130,6 +153,12 @@ df_subcuencas['RainGage'] = df_subcuencas[0]
 df_subcuencas = df_subcuencas.drop(columns=[0])
 
 str_subcatchments = df_subcuencas.to_string(index=True, header=False, index_names=False, justify='left')
-# inicio = lines2.index('[SUBCATCHMENTS]\n') + 3
-# fin = lines2.index('[SUBAREAS]\n') -1
-# lines3 = lines2[:inicio] + [str_subcatchments] + ['\n'] + lines2[fin:]
+
+lines = lines[:inicio] + [str_subcatchments] + ['\n'] + lines[fin:]
+
+
+
+# 5. ACTUALIZACIÓN DEL ARCHIVO .inp
+f = open (f'model_base.inp','w')
+f.write(''.join(lines))
+f.close()
