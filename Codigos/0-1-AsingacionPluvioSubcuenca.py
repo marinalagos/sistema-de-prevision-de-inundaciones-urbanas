@@ -4,28 +4,69 @@ from shapely.geometry import Polygon, MultiPoint, Point
 import pyproj
 from scipy.spatial import KDTree
 from glob import glob
+import argparse
 
-# DEFINIR PYTHONPATH (directorio raíz del repositorio)
+# 0. DEFINIR PYTHONPATH (directorio raíz del repositorio)
 repo_path = os.getenv('PYTHONPATH') # Obtener el directorio del repositorio desde la variable de entorno (archivo ".env")
 if repo_path:
     os.chdir(repo_path)
 
 
 
-# ARCHIVOS DE ENTRADA
-inp_file = 'Carpeta_base_SWMM/model_base.inp'
-nc_file = glob('Carpeta_base_SWMM/*.nc')[0]
+# 1. PARSEAR INPUTS
+# Crear el parser
+parser = argparse.ArgumentParser(description='Procesar archivos de entrada y NetCDF.')
+
+# Añadir los argumentos que esperas recibir
+parser.add_argument('--inp_file', 
+                    type = str, 
+                    help = 'Ruta al archivo .inp a modificar.', 
+                    default = 'Carpeta_base_SWMM/model_base.inp')
+
+parser.add_argument('--nc_file', 
+                    type = str, 
+                    help = 'Ruta al archivo NetCDF del cual tomar la grilla.', 
+                    default = glob('Carpeta_base_SWMM/*.nc')[0])
+
+parser.add_argument('--inp_file_modificado', 
+                    type = str, 
+                    help = 'Ruta al archivo .inp a modificar. Si no se define, se sobrescribe el .inp original.', 
+                    default='False')
+
+parser.add_argument('--crs_SWMM', 
+                    type = int, 
+                    help = 'Código EPSG del crs del modelo SWMM. Por defecto: 5347 (Posgar 2007 Faja 5)', 
+                    default= 5347)
+
+parser.add_argument('--crs_precipitacion', 
+                    type = int, 
+                    help = 'Código EPSG del crs del archivo de precipitación (.nc). Por defecto: 4326 (WGS84)', 
+                    default= 4326)
+
+# Parsear los argumentos
+args = parser.parse_args()
+
+inp_file = args.inp_file
+nc_file = args.nc_file
+
+if args.inp_file_modificado == False:
+    inp_file_modificado = inp_file
+else:
+    inp_file_modificado = args.inp_file_modificado
+
+epsg_SWMM = args.crs_SWMM
+epsg_precipitacion = args.crs_precipitacion
 
 
 
-# SISTEMAS DE COORDENADAS
-crs_SWMM = pyproj.CRS.from_epsg(5347) # CRS Posgar 2007 Faja 5 (código EPSG: 5347)
-crs_netCDF = pyproj.CRS.from_epsg(4326) # WGS84 (código EPSG: 4326)
+# 2. DEFINIR SISTEMAS DE COORDENADAS
+crs_SWMM = pyproj.CRS.from_epsg(epsg_SWMM) # CRS Posgar 2007 Faja 5 (código EPSG: 5347)
+crs_netCDF = pyproj.CRS.from_epsg(epsg_precipitacion) # WGS84 (código EPSG: 4326)
 posgar2geo = pyproj.Transformer.from_crs(crs_SWMM, crs_netCDF, always_xy=True) # Conversor de coordenadas
 
 
 
-# 1. EXTRACCIÓN DE CENTROIDES DE LOS POLÍGONOS DE SUBCUENCAS A PARTIR DEL .inp
+# 3. EXTRACCIÓN DE CENTROIDES DE LOS POLÍGONOS DE SUBCUENCAS A PARTIR DEL .inp
 # Abre el archivo de entrada y lee todas las líneas
 with open(inp_file) as f:
     lines = f.readlines()
@@ -68,7 +109,7 @@ minlon, minlat, maxlon, maxlat = multi_point.bounds
 
 
 
-# 2. EXTRACCIÓN DE CENTROIDES DE LAS CELDAS DE PRECIPITACIÓN A PARTIR DEL .nc
+# 4. EXTRACCIÓN DE CENTROIDES DE LAS CELDAS DE PRECIPITACIÓN A PARTIR DEL .nc
 ds = xr.open_dataset(nc_file, decode_coords='all', engine='netcdf4')
 ds1 = ds.where((ds.XLONG > minlon - .1) & (ds.XLONG < maxlon + .1) & 
                (ds.XLAT > minlat - .1) & (ds.XLAT < maxlat + .1), 
@@ -92,7 +133,7 @@ for lat in lats:
 
 
 
-# 3. ASIGNACIÓN SUBCUENCA-CELDA
+# 5. ASIGNACIÓN SUBCUENCA-CELDA
 coordenadas1 = [p.coords[:][0] for p in subc_centroid.values()]
 coordenadas2 = [p.coords[:][0] for p in cell_coords.values()]
 
@@ -112,7 +153,7 @@ df_sub_cell = pd.DataFrame.from_dict(asignacion, orient='index')
 
 
 
-# 4. MODIFICACIÓN DE TABLA DE PLUVIOMETROS EN EL ARCHIVO .inp
+# 6. MODIFICACIÓN DE TABLA DE PLUVIOMETROS EN EL ARCHIVO .inp
 
 inicio = lines.index('[RAINGAGES]\n') + 3
 fin = lines.index('[SUBCATCHMENTS]\n') -1
@@ -134,7 +175,7 @@ lines = lines[:inicio] + [str_raingages] + ['\n'] + lines[fin:]
 
 
 
-# 5. MODIFICACIÓN DE TABLA DE SUBCUENCAS EN EL ARCHIVO .inp
+# 7. MODIFICACIÓN DE TABLA DE SUBCUENCAS EN EL ARCHIVO .inp
 # Extracción de la tabla de subcuencas del archivo .inp
 inicio = lines.index('[SUBCATCHMENTS]\n') + 3
 fin = lines.index('[SUBAREAS]\n') - 1
@@ -158,7 +199,7 @@ lines = lines[:inicio] + [str_subcatchments] + ['\n'] + lines[fin:]
 
 
 
-# 5. ACTUALIZACIÓN DEL ARCHIVO .inp
+# 8. ACTUALIZACIÓN DEL ARCHIVO .inp
 f = open (f'model_base.inp','w')
 f.write(''.join(lines))
 f.close()
