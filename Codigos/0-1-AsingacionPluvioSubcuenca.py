@@ -5,6 +5,7 @@ import pyproj
 from scipy.spatial import KDTree
 from glob import glob
 import argparse
+import os
 
 # 0. DEFINIR PYTHONPATH (directorio raíz del repositorio)
 repo_path = os.getenv('PYTHONPATH') # Obtener el directorio del repositorio desde la variable de entorno (archivo ".env")
@@ -200,6 +201,6 @@ lines = lines[:inicio] + [str_subcatchments] + ['\n'] + lines[fin:]
 
 
 # 8. ACTUALIZACIÓN DEL ARCHIVO .inp
-f = open (f'model_base.inp','w')
+f = open (inp_file_modificado,'w')
 f.write(''.join(lines))
 f.close()
