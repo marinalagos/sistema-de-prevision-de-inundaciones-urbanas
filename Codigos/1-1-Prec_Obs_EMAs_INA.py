@@ -2,26 +2,47 @@ import pandas as pd
 import requests
 import json
 import os
-
-# INPUTS:
-# 1. TimeStamp inicio
-# 2. TimeStamp final
-# 3. Grilla a usar
-# 4. Ids estaciones a consultar
-# 5. Path donde guardar el archivo de lluvia
-
-# OUTPUTS:
-# 1. Archivo de lluvia
-
-
+import argparse
 
 # 0. DEFINIR PYTHONPATH (directorio raíz del repositorio)
 repo_path = os.getenv('PYTHONPATH') # Obtener el directorio del repositorio desde la variable de entorno (archivo ".env")
 if repo_path:
     os.chdir(repo_path)
 
-# 1. CONSULTAR ARCHIVOS .json DE CREDENCIALES Y PARÁMETROS
 
+
+# 1. PARSEAR INPUTS
+# Crear el parser
+parser = argparse.ArgumentParser(description='Procesar archivos de entrada y NetCDF.')
+
+# Añadir los argumentos que esperas recibir
+parser.add_argument('inicio_sim', 
+                    type = str, 
+                    help = 'Timestamp (UTC) del inicio de la simulación. Formato: yyyy-mm-dd hh:mm'
+                    )
+
+parser.add_argument('fin_sim', 
+                    type = str, 
+                    help = 'Timestamp (UTC) del fin de la simulación. Formato: yyyy-mm-dd hh:mm'
+                    )
+
+parser.add_argument('--cell_coords', 
+                    type = str, 
+                    help = 'Ruta al .csv con las coordenadas de la grilla.',
+                    default = 'Carpeta_base_SWMM/coordenadas_celdas.csv'
+                    )
+
+# Parsear los argumentos
+args = parser.parse_args()
+
+inicio_sim = pd.to_datetime(args.inicio_sim, utc=True)
+fin_sim = pd.to_datetime(args.fin_sim, utc=True)
+path_cell_cords = args.cell_coords
+
+                    
+
+# 2. CONSULTAR ARCHIVOS .json DE CREDENCIALES Y PARÁMETROS
+# Credenciales
 with open('credenciales.json', 'r') as f:
     content = f.read()
     if not content.strip():
@@ -29,8 +50,7 @@ with open('credenciales.json', 'r') as f:
     else:
         token_base_INA = json.loads(content)['token_base_INA']
 
-# Obtener listado de EMAs a consultar
-
+# EMAs a consultar
 with open('config.json', 'r') as f:
     content = f.read()
     if not content.strip():
@@ -38,7 +58,9 @@ with open('config.json', 'r') as f:
     else:
         params_base_INA = json.loads(content)['params_base_INA']
 
-# CONSULTA A LA BASE DEL INA
+
+
+# 3. CONSULTA A LA BASE DEL INA
 ids_serie = params_base_INA['ids_EMAs_consultadas']    
 
 for id_serie in ids_serie:
