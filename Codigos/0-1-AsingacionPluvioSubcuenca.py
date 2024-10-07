@@ -63,7 +63,8 @@ else:
 
 epsg_SWMM = args.crs_SWMM
 epsg_precipitacion = args.crs_precipitacion
-# AGREGAR CELL COORDS
+
+path_cell_cords = args.cell_coords
 
 # inp_file = 'Carpeta_base_SWMM/model_base.inp'
 # nc_file = glob('Carpeta_base_SWMM/*.nc')[0]
