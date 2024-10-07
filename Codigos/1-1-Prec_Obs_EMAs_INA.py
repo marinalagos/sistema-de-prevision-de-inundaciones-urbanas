@@ -26,6 +26,11 @@ if repo_path:
 #                     help = 'Timestamp (UTC) del fin de la simulación. Formato: yyyy-mm-dd hh:mm'
 #                     )
 
+# parser.add_argument('dt_min', 
+#                     type = int, 
+#                     help = 'Paso temporal deseado en minutos.'
+#                     )
+
 # parser.add_argument('--cell_coords', 
 #                     type = str, 
 #                     help = 'Ruta al .csv con las coordenadas de la grilla.',
@@ -37,13 +42,15 @@ if repo_path:
 
 # inicio_sim = pd.to_datetime(args.inicio_sim, utc=True)
 # fin_sim = pd.to_datetime(args.fin_sim, utc=True)
+# dt_min = args.dt_min
 # path_cell_cords = args.cell_coords
 
 inicio_sim = pd.to_datetime('2024-10-01 00:00', utc=True)
 fin_sim = pd.to_datetime('2024-10-01 01:00', utc=True)
+dt_min = 5
 path_cell_cords = 'Carpeta_base_SWMM/coordenadas_celdas.csv'
 
-                    
+
 
 # 2. CONSULTAR ARCHIVOS .json DE CREDENCIALES Y PARÁMETROS
 # Credenciales
@@ -90,6 +97,7 @@ for id_serie in ids_serie:
 
 
 # 4. PREPROCESAMIENTO DATOS EMAs
+series = []
 for df in dfs:
     # a. Identificar datos faltantes y completar con NaN
     dt = (df.timestart - df.timestart.shift(1)).value_counts().idxmax() # time delta
@@ -101,7 +109,13 @@ for df in dfs:
     serie = serie*pd.Timedelta(hours=1)/dt
 
     # c. Llevar a intervalos de un minuto
-    serie_ = serie.resample('60s').bfill()
+    serie = serie.resample('60s').bfill()
+    series.append(serie)
 
+# d. Llevar a paso temporal deseado
+df = pd.concat(series, axis=1)
+df = df.resample(f'{dt_deseado}min', origin='end').mean()
     
 
+
+# 5. INTERPOLACIÓN ESPACIAL (THIESSEN O IDW). DE EMAs A CELDAS.
