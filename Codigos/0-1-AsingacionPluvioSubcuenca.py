@@ -34,7 +34,7 @@ parser.add_argument('--inp_file_modificado',
                     help = 'Ruta al archivo .inp a modificar. Si no se define, se sobrescribe el .inp original.', 
                     default ='False')
 
-parser.add_argument('--cell_cords', 
+parser.add_argument('--cell_coords', 
                     type = str, 
                     help = 'Ruta donde exportar las coordenadas de cada celda.', 
                     default = 'Carpeta_base_SWMM/coordenadas_celdas.csv')
