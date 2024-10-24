@@ -38,6 +38,11 @@ if repo_path:
 #                     default = [3281, 3282, 3283, 3284, 3285, 3286, 3287, 3288, 3289, 3290, 3291, 3292, 3293, 3294, 3295, 3302, 3304, 3305, 2867, 2868, 2869, 2870, 3955, 3609, 3766, 3921, 3297, 3298, 3301, 3299, 3300]
 #                     )
 
+# parser.add_argument('token_base_INA',
+#                     type = 'str',
+#                     help = 'Token para tener acceso a la base INA.'
+#                     )
+
 # parser.add_argument('--cell_coords', 
 #                     type = str, 
 #                     help = 'Ruta al .csv con las coordenadas de la grilla.',
@@ -52,17 +57,13 @@ if repo_path:
 # dt_min = args.dt_min
 # path_cell_cords = args.cell_coords
 # ids_serie = args.ids_EMAs
+# token_base_INA = args.token_base_INA
 
 inicio_sim = pd.to_datetime('2024-10-01 00:00', utc=True)
 fin_sim = pd.to_datetime('2024-10-01 01:00', utc=True)
 dt_min = 5
 path_cell_cords = 'Carpeta_base_SWMM/coordenadas_celdas.csv'
 ids_serie = [3281, 3282, 3283, 3284, 3285, 3286, 3287, 3288, 3289, 3290, 3291, 3292, 3293, 3294, 3295, 3302, 3304, 3305, 2867, 2868, 2869, 2870, 3955, 3609, 3766, 3921, 3297, 3298, 3301, 3299, 3300]
-
-
-
-# 2. CONSULTAR ARCHIVOS .json DE CREDENCIALES Y PARÁMETROS
-# Credenciales
 with open('credenciales.json', 'r') as f:
     content = f.read()
     if not content.strip():
@@ -70,17 +71,7 @@ with open('credenciales.json', 'r') as f:
     else:
         token_base_INA = json.loads(content)['token_base_INA']
 
-# EMAs a consultar
-with open('config.json', 'r') as f:
-    content = f.read()
-    if not content.strip():
-        print("El archivo config.json está vacío.")
-    else:
-        params_base_INA = json.loads(content)['params_base_INA']
-
-
-
-# 3. CONSULTA A LA BASE DEL INA
+# 2. CONSULTA A LA BASE DEL INA
 
 dfs = []
 
@@ -104,7 +95,7 @@ for id_serie in ids_serie:
         print(df.timestart - df.timeend)
 
 
-# 4. PREPROCESAMIENTO DATOS EMAs
+# 3. PREPROCESAMIENTO DATOS EMAs
 series = []
 for df in dfs:
     # a. Identificar datos faltantes y completar con NaN
@@ -126,4 +117,4 @@ df = df.resample(f'{dt_deseado}min', origin='end').mean()
     
 
 
-# 5. INTERPOLACIÓN ESPACIAL (THIESSEN O IDW). DE EMAs A CELDAS.
+# 4. INTERPOLACIÓN ESPACIAL (THIESSEN O IDW). DE EMAs A CELDAS.
