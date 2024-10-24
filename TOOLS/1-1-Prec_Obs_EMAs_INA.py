@@ -31,6 +31,13 @@ if repo_path:
 #                     help = 'Paso temporal deseado en minutos.'
 #                     )
 
+# parser.add_argument('ids_EMAs',
+#                     nargs = '+',
+#                     type = int, 
+#                     help = 'Lista de ids de las EMAs de la base INA a consultar.',
+#                     default = [3281, 3282, 3283, 3284, 3285, 3286, 3287, 3288, 3289, 3290, 3291, 3292, 3293, 3294, 3295, 3302, 3304, 3305, 2867, 2868, 2869, 2870, 3955, 3609, 3766, 3921, 3297, 3298, 3301, 3299, 3300]
+#                     )
+
 # parser.add_argument('--cell_coords', 
 #                     type = str, 
 #                     help = 'Ruta al .csv con las coordenadas de la grilla.',
@@ -44,11 +51,13 @@ if repo_path:
 # fin_sim = pd.to_datetime(args.fin_sim, utc=True)
 # dt_min = args.dt_min
 # path_cell_cords = args.cell_coords
+# ids_serie = args.ids_EMAs
 
 inicio_sim = pd.to_datetime('2024-10-01 00:00', utc=True)
 fin_sim = pd.to_datetime('2024-10-01 01:00', utc=True)
 dt_min = 5
 path_cell_cords = 'Carpeta_base_SWMM/coordenadas_celdas.csv'
+ids_serie = [3281, 3282, 3283, 3284, 3285, 3286, 3287, 3288, 3289, 3290, 3291, 3292, 3293, 3294, 3295, 3302, 3304, 3305, 2867, 2868, 2869, 2870, 3955, 3609, 3766, 3921, 3297, 3298, 3301, 3299, 3300]
 
 
 
@@ -72,7 +81,6 @@ with open('config.json', 'r') as f:
 
 
 # 3. CONSULTA A LA BASE DEL INA
-ids_serie = params_base_INA['ids_EMAs_consultadas']
 
 dfs = []
 
