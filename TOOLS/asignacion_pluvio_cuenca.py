@@ -1,6 +1,6 @@
 """
 -------------------------------------------------------------------------------
-TOOL AsignacionPluvioCuenca
+TOOL asignacion_pluvio_cuenca
 -------------------------------------------------------------------------------
 Toma las subcuencas de un .inp y la grilla de un .nc
 1) Realiza la asignación
