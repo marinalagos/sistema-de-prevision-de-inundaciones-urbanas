@@ -1,3 +1,15 @@
+"""
+-------------------------------------------------------------------------------
+TOOL AsignacionPluvioCuenca
+-------------------------------------------------------------------------------
+Toma las subcuencas de un .inp y la grilla de un .nc
+1) Realiza la asignación
+2) Crea un nuevo .inp modificando tabla de subcuencas y tabla de pluviómetros
+(o sobreescribe el original).
+3) Exporta un .csv con los nombres asignados a cada celda/pluviometro (ej.: 
+P34975_58175) y sus coordenadas.
+"""
+
 import pandas as pd
 import xarray as xr
 from shapely.geometry import Polygon, MultiPoint, Point
@@ -16,9 +28,9 @@ if repo_path:
 
 # 1. PARSEAR INPUTS
 # Crear el parser
-parser = argparse.ArgumentParser(description='Procesar archivos de entrada y NetCDF.')
+parser = argparse.ArgumentParser(description='Procesar .inp y NetCDF.')
 
-# Añadir los argumentos que esperas recibir
+# Definir argumentos
 parser.add_argument('--inp_file', 
                     type = str, 
                     help = 'Ruta al archivo .inp a modificar.', 
