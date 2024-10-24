@@ -1,81 +1,41 @@
-import time
-import os
-import numpy as np
 import pandas as pd
-import geopandas as gpd
-from shapely.geometry import Point, LineString, Polygon #!pip install -U shapely
 
-ruta='pruebas_borrar'
-Nombre_Modelo='modelo_conupy_fmt'
-name_swmm='modelo_conupy_fmt'
-# Nombre_Modelo='modelo_swmm_fmt'
-# name_swmm='modelo_swmm_fmt'
-crs_proy='EPSG: 22176'
-SubCuencas = True
-Nodos = True
-Links = True
-
-archivo_inp = ruta+'/Modelos/'+Nombre_Modelo+'/'+name_swmm+'.inp'
-a_inp = open(archivo_inp, 'r', encoding='latin-1')
-
-objects = ['subcatchments', 'conduits']
-subcatchments = True
-junctions = True
-storage = True
-conduits = True
-xsections = True
-coordinates = True
-polygons = True
-
-general_dict = {
-    'subcatchments': {'attributes': ['Name', 'Rgage', 'OutID', 'Area', '%Imperv', 'Width', 'Slope', 'Clength'],
-                      'flag': False,
-                      'request': subcatchments},
-    'junctions': {'attributes': ['Name', 'Elev', 'Ymax', 'Y0', 'Ysur', 'Apond'],
-                  'flag': False,
-                  'request': junctions},
-    'storage': {'attributes': ['Name', 'Elev.', 'MaxDepth', 'InitDepth', 'Shape', 'Curve', 'Type/Params', 'SurDepth', 'Fevap', 'Psi', 'Ksat', 'IMD'],
-                'flag': False,
-                'request': storage},
-    'conduits': {'attributes': ['Name', 'From Node', 'To Node', 'Length', 'Roughness', 'InOffset', 'OutOffse', 'InitFlow', 'MaxFlow'],
-                 'flag': False,
-                 'request': conduits},
-    'xsections': {'attributes': ['Link', 'Shape', 'Geom1','Geom2', 'Geom3', 'Geom4', 'Barrels', 'Culvert'],
-                  'flag': False,
-                  'request': xsections},
-    'coordinates': {'attributes': ['Node', 'X-Coord', 'Y-Coord'],
-                    'flag': False,
-                    'request': coordinates},
-    'polygons': {'attributes': ['Subcatchment', 'X-Coord', 'Y-Coord'],
-                 'flag': False,
-                 'request': polygons},
-}
-
-def get_ini_fin(object, linea, line, contador):
-    if linea.upper().find('[' + object.upper() + ']') != -1:
-        general_dict[object]['ini'] = contador
-        general_dict[object]['flag'] = True
-    if (len(line) == 1 or line.startswith('\t')) and general_dict[object]['flag']:
-        general_dict[object]['fin'] = contador
-        general_dict[object]['flag'] = False
-        
-if True:
-# def inp2df(ruta, Nombre_Modelo, name_swmm,crs_proy,SubCuencas=True,Nodos=True,Links=True):
-    #Nombre archivos
-    inicio = time.time()
-    archivo_inp = ruta+'/Modelos/'+Nombre_Modelo+'/'+name_swmm+'.inp'
+def inp2df(inpfile, subcatchments=False, junctions=False, storage=False, conduits=False, xsections=False, coordinates=False, polygons=False):
     
-    os.makedirs(ruta+'/Salidas/' + Nombre_Modelo+'/shps', exist_ok=True)
-    os.makedirs(ruta+'/Salidas/' + Nombre_Modelo+'/csv', exist_ok=True)
+    a_inp = open(inpfile, 'r', encoding='latin-1')
+    dict_results = {}
 
-    shp_nodos = ruta+'/Salidas/' + Nombre_Modelo+'/shps/Nodos_'+Nombre_Modelo+'.shp'
-    shp_nodos_storage = ruta+'/Salidas/' + Nombre_Modelo+'/shps/Nodos_'+Nombre_Modelo+'_storage.shp'
-    shp_links = ruta+'/Salidas/' + Nombre_Modelo+'/shps/Links_'+Nombre_Modelo+'.shp'
-    shp_cuencas = ruta+'/Salidas/' + Nombre_Modelo+'/shps/Cuencas_'+Nombre_Modelo+'.shp'
+    general_dict = {
+        'subcatchments': {'attributes': ['Name', 'Rgage', 'OutID', 'Area', '%Imperv', 'Width', 'Slope', 'Clength'],
+                        'flag': False,
+                        'request': subcatchments},
+        'junctions': {'attributes': ['Name', 'Elev', 'Ymax', 'Y0', 'Ysur', 'Apond'],
+                    'flag': False,
+                    'request': junctions},
+        'storage': {'attributes': ['Name', 'Elev.', 'MaxDepth', 'InitDepth', 'Shape', 'Curve', 'Type/Params', 'SurDepth', 'Fevap', 'Psi', 'Ksat', 'IMD'],
+                    'flag': False,
+                    'request': storage},
+        'conduits': {'attributes': ['Name', 'From Node', 'To Node', 'Length', 'Roughness', 'InOffset', 'OutOffse', 'InitFlow', 'MaxFlow'],
+                    'flag': False,
+                    'request': conduits},
+        'xsections': {'attributes': ['Link', 'Shape', 'Geom1','Geom2', 'Geom3', 'Geom4', 'Barrels', 'Culvert'],
+                    'flag': False,
+                    'request': xsections},
+        'coordinates': {'attributes': ['Node', 'X-Coord', 'Y-Coord'],
+                        'flag': False,
+                        'request': coordinates},
+        'polygons': {'attributes': ['Subcatchment', 'X-Coord', 'Y-Coord'],
+                    'flag': False,
+                    'request': polygons},
+    }
 
-    csv_nodos = ruta+'/Salidas/' + Nombre_Modelo+'/csv/Nodos_'+Nombre_Modelo+'.csv'
-    csv_links = ruta+'/Salidas/' + Nombre_Modelo+'/shps/Links_'+Nombre_Modelo+'.csv'
-    csv_cuencas = ruta+'/Salidas/' + Nombre_Modelo+'/shps/Cuencas_'+Nombre_Modelo+'.csv'
+    def get_ini_fin(object, linea, line, contador):
+        if linea.upper().find('[' + object.upper() + ']') != -1:
+            general_dict[object]['ini'] = contador
+            general_dict[object]['flag'] = True
+        if (len(line) == 1 or line.startswith('\t')) and general_dict[object]['flag']:
+            general_dict[object]['fin'] = contador
+            general_dict[object]['flag'] = False
 
     contador = 0
 
@@ -95,7 +55,7 @@ if True:
             print(object.upper() + '\n')
             skip1 = general_dict[object]['ini'] + 2
             skip2 = last_line - general_dict[object]['fin']
-            df_object = pd.read_csv(archivo_inp,
+            df_object = pd.read_csv(inpfile,
                                     sep='\s+',
                                     skiprows=skip1, 
                                     skipfooter=skip2,
@@ -106,7 +66,10 @@ if True:
             df_object[df_object.columns[0]] = df_object[df_object.columns[0]].astype('str')
             df_object.set_index(df_object[df_object.columns[0]], inplace=True)
             del df_object[df_object.columns[0]]
+            dict_results[object] = df_object
             print(df_object)
             print('\n')
+    
+    return dict_results
 
-
+# ver = inp2df('/home/phc/Git/sistema-de-prevision-de-inundaciones-urbanas/Carpeta_base_SWMM/model_base.inp', subcatchments=True, junctions=True)
