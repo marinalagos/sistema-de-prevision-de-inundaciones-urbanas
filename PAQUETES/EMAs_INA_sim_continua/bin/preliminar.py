@@ -1,3 +1,10 @@
+import os
+
+#  0. DEFINIR PYTHONPATH (directorio raíz del repositorio)
+repo_path = os.getenv('PYTHONPATH') # Obtener el directorio del repositorio desde la variable de entorno (archivo ".env")
+if repo_path:
+    os.chdir(repo_path)
+
 # 2. CONSULTAR ARCHIVOS .json DE CREDENCIALES Y PARÁMETROS
 # Credenciales
 with open('credenciales.json', 'r') as f:
