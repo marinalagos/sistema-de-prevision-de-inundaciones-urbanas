@@ -21,3 +21,11 @@ with open('config.json', 'r') as f:
         print("El archivo config.json está vacío.")
     else:
         params_base_INA = json.loads(content)['params_base_INA']
+
+
+# inp_file = 'Carpeta_base_SWMM/model_base.inp'
+# nc_file = glob('Carpeta_base_SWMM/*.nc')[0]
+# inp_file_modificado = 'modelo_prueba.inp'
+# epsg_SWMM = 5347
+# epsg_precipitacion = 4326
+# path_cell_cords = 'Carpeta_base_SWMM/coordenadas_celdas.csv'
