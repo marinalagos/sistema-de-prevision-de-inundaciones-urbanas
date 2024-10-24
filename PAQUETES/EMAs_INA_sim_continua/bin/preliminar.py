@@ -1,12 +1,16 @@
 import os
+import json
+from glob import glob
+from TOOLS.asignacion_pluvio_cuenca import asignacion_pluvio_cuenca
+from TOOLS.consultar_emas_base_ina import consultar_emas_base_ina
 
 #  0. DEFINIR PYTHONPATH (directorio raíz del repositorio)
 repo_path = os.getenv('PYTHONPATH') # Obtener el directorio del repositorio desde la variable de entorno (archivo ".env")
 if repo_path:
     os.chdir(repo_path)
 
-# 2. CONSULTAR ARCHIVOS .json DE CREDENCIALES Y PARÁMETROS
-# Credenciales
+# 1. CONSULTAR ARCHIVOS .json DE CREDENCIALES Y PARÁMETROS
+# 1.a. Credenciales
 with open('credenciales.json', 'r') as f:
     content = f.read()
     if not content.strip():
@@ -14,18 +18,30 @@ with open('credenciales.json', 'r') as f:
     else:
         token_base_INA = json.loads(content)['token_base_INA']
 
-# EMAs a consultar
-with open('config.json', 'r') as f:
+# 1.b. PARÁMETROS
+with open('PAQUETES/EMAs_INA_sim_continua/config_exp/config.json', 'r') as f:
     content = f.read()
     if not content.strip():
         print("El archivo config.json está vacío.")
     else:
-        params_base_INA = json.loads(content)['params_base_INA']
+        params = json.loads(content)
 
 
-# inp_file = 'Carpeta_base_SWMM/model_base.inp'
-# nc_file = glob('Carpeta_base_SWMM/*.nc')[0]
-# inp_file_modificado = 'modelo_prueba.inp'
-# epsg_SWMM = 5347
-# epsg_precipitacion = 4326
-# path_cell_cords = 'Carpeta_base_SWMM/coordenadas_celdas.csv'
+# 2. ASIGNACIÓN PLUVIO CUENCA
+asignacion_pluvio_cuenca(inp_file = params['inp_base'],
+                         nc_file = params['nc_grid'], 
+                         inp_file_modificado = params['inp_modificado'],
+                         epsg_SWMM = params['epsg_SWMM'],
+                         epsg_precipitacion = params['epsg_precipitacion'],
+                         path_cell_coords = params['path_cell_coords'])
+
+# 3. CONSULTAR EMAs BASE INA
+consultar_emas_base_ina(inicio_sim = params['inicio_sim'],
+                        fin_sim = params['fin_sim'],
+                        dt_min = params['dt_minutos'],
+                        token_base_INA = token_base_INA,
+                        cell_coords = params['path_cell_coords'],
+                        ids_EMAs=params['ids_EMAs_consultadas'])
+
+# 4. CORRER SWMM
+# 5. GUARDAR OUTPUT

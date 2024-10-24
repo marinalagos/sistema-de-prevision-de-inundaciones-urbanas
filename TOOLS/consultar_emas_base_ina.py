@@ -73,22 +73,22 @@ def consultar_emas_base_ina(
     # ids_serie = args.ids_EMAs
     # token_base_INA = args.token_base_INA
 
+# if True:
 
-
-    # repo_path = os.getenv('PYTHONPATH') # Obtener el directorio del repositorio desde la variable de entorno (archivo ".env")
-    # if repo_path:
-    #     os.chdir(repo_path)
-    # inicio_sim = pd.to_datetime('2024-10-01 00:00', utc=True)
-    # fin_sim = pd.to_datetime('2024-10-01 01:00', utc=True)
-    # dt_min = 5
-    # path_cell_cords = 'Carpeta_base_SWMM/coordenadas_celdas.csv'
-    # ids_serie = [3281, 3282, 3283, 3284, 3285, 3286, 3287, 3288, 3289, 3290, 3291, 3292, 3293, 3294, 3295, 3302, 3304, 3305, 2867, 2868, 2869, 2870, 3955, 3609, 3766, 3921, 3297, 3298, 3301, 3299, 3300]
-    # with open('credenciales.json', 'r') as f:
-    #     content = f.read()
-    #     if not content.strip():
-    #         print("El archivo credenciales.json está vacío.")
-    #     else:
-    #         token_base_INA = json.loads(content)['token_base_INA']
+#     repo_path = os.getenv('PYTHONPATH') # Obtener el directorio del repositorio desde la variable de entorno (archivo ".env")
+#     if repo_path:
+#         os.chdir(repo_path)
+#     inicio_sim = pd.to_datetime('2024-10-01 00:00', utc=True)
+#     fin_sim = pd.to_datetime('2024-10-01 01:00', utc=True)
+#     dt_min = 5
+#     path_cell_cords = 'Carpeta_base_SWMM/coordenadas_celdas.csv'
+#     ids_serie = [3281, 3282, 3283, 3284, 3285, 3286, 3287, 3288, 3289, 3290, 3291, 3292, 3293, 3294, 3295, 3302, 3304, 3305, 2867, 2868, 2869, 2870, 3955, 3609, 3766, 3921, 3297, 3298, 3301, 3299, 3300]
+#     with open('credenciales.json', 'r') as f:
+#         content = f.read()
+#         if not content.strip():
+#             print("El archivo credenciales.json está vacío.")
+#         else:
+#             token_base_INA = json.loads(content)['token_base_INA']
 
 
 
@@ -96,7 +96,10 @@ def consultar_emas_base_ina(
 
     dfs = []
 
-    for id_serie in ids_serie:
+    inicio_sim = pd.to_datetime(inicio_sim, utc=True)
+    fin_sim = pd.to_datetime(fin_sim, utc=True)
+
+    for id_serie in ids_EMAs:
         print(id_serie)
         response = requests.get(
         f"https://alerta.ina.gob.ar/a6/obs/puntual/series/{id_serie}/observaciones", 
@@ -112,8 +115,8 @@ def consultar_emas_base_ina(
             df.timestart = pd.to_datetime(df.timestart)
             df.timeend = pd.to_datetime(df.timeend)
             dfs.append(df)
-            j = response.json()
-            print(df.timestart - df.timeend)
+            # j = response.json()
+            # print(df.timestart - df.timeend)
 
 
     # 3. PREPROCESAMIENTO DATOS EMAs
@@ -134,8 +137,7 @@ def consultar_emas_base_ina(
 
     # d. Llevar a paso temporal deseado
     df = pd.concat(series, axis=1)
-    df = df.resample(f'{dt_deseado}min', origin='end').mean()
+    df = df.resample(f'{dt_min}min', origin='end').mean()
+    
         
-
-
     # 4. INTERPOLACIÓN ESPACIAL (THIESSEN O IDW). DE EMAs A CELDAS.

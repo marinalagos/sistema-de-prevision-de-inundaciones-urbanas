@@ -22,9 +22,9 @@ import os
 def asignacion_pluvio_cuenca(
     inp_file, # Ruta al archivo .inp a modificar
     nc_file, # Ruta al archivo NetCDF del cual tomar la grilla
-    cell_coords, # Ruta donde exportar las coordenadas de cada celda
-    crs_SWMM, # Código EPSG del crs del modelo SWMM
-    crs_precipitacion, # Código EPSG del crs del archivo de precipitación (.nc)
+    path_cell_coords, # Ruta donde exportar las coordenadas de cada celda
+    epsg_SWMM, # Código EPSG del crs del modelo SWMM
+    epsg_precipitacion, # Código EPSG del crs del archivo de precipitación (.nc)
     inp_file_modificado = False, # Ruta al archivo .inp a modificar. Si no se define, se sobrescribe el .inp original
     ):
 
@@ -163,7 +163,7 @@ def asignacion_pluvio_cuenca(
             cell_coords[cell] = Point(lon, lat)
 
     df_cell_coords = pd.DataFrame(cell_coords.items(), columns=['ID', 'Coordinates'])
-    df_cell_coords.to_csv(path_cell_cords, index=False)
+    df_cell_coords.to_csv(path_cell_coords, index=False)
 
 
     # 4. ASIGNACIÓN SUBCUENCA-CELDA
