@@ -37,12 +37,10 @@ asignacion_pluvio_cuenca(inp_file = params['inp_base'],
                          path_cell_coords = params['path_cell_coords'])
 
 # 3. CONSULTAR EMAs BASE INA
-consultar_emas_base_ina(inicio_sim = pd.to_datetime('2024-10-10 00:00', utc=True),# params['inicio_sim'],
-                        fin_sim = pd.to_datetime('2024-10-13 00:00', utc=True),
-                        dt_min = params['dt_minutos'],
-                        token_base_INA = token_base_INA,
-                        cell_coords = params['path_cell_coords'],
-                        ids_EMAs=params['ids_EMAs_consultadas'])
+grid_data = consultar_emas_base_ina(inicio_sim = pd.to_datetime('2024-10-10 00:00', utc=True),# params['inicio_sim'],
+                                    fin_sim = pd.to_datetime('2024-10-13 00:00', utc=True),
+                                    token_base_INA = token_base_INA,
+                                    params = params)
 
 # 4. CORRER SWMM
 # 5. GUARDAR OUTPUT
