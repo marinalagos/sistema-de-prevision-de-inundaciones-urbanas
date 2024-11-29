@@ -3,7 +3,7 @@
 TOOL consultar_emas_base_ina
 -------------------------------------------------------------------------------
 Realiza la consulta de precipitación a la base INA, indicando inicio, fin e ids
-de las estaciones
+de las estaciones. El dataframe resultado está expresado en mm/h.
 1) Realizar la consulta
 2) Preprocesamiento de los datos: identificar faltantes, convertir a intensidad
 y resamplear a intervalo deseado.
@@ -15,15 +15,50 @@ import requests
 import json
 import os
 import argparse
+import geopandas as gpd
+from shapely import wkt
+import UTILS.spatial_interpolation as spint
 
-def consultar_emas_base_ina(
-    inicio_sim, # Timestamp (UTC) del inicio de la simulación. Formato: yyyy-mm-dd hh:mm'
-    fin_sim, # Timestamp (UTC) del fin de la simulación. Formato: yyyy-mm-dd hh:mm
-    dt_min, # Paso temporal deseado en minutos.
-    token_base_INA, # Token para tener acceso a la base INA
-    cell_coords, # Ruta al .csv con las coordenadas de la grilla
-    ids_EMAs = [3281, 3282, 3283, 3284, 3285, 3286, 3287, 3288, 3289, 3290, 3291, 3292, 3293, 3294, 3295, 3302, 3304, 3305, 2867, 2868, 2869, 2870, 3955, 3609, 3766, 3921, 3297, 3298, 3301, 3299, 3300], # Lista de ids de las EMAs de la base INA a consultar
-    ):
+if True:
+    #  0. DEFINIR PYTHONPATH (directorio raíz del repositorio)
+    repo_path = os.getenv('PYTHONPATH') # Obtener el directorio del repositorio desde la variable de entorno (archivo ".env")
+    if repo_path:
+        os.chdir(repo_path)
+
+    # 1. CONSULTAR ARCHIVOS .json DE CREDENCIALES Y PARÁMETROS
+    # 1.a. Credenciales
+    with open('credenciales.json', 'r') as f:
+        content = f.read()
+        if not content.strip():
+            print("El archivo credenciales.json está vacío.")
+        else:
+            token_base_INA = json.loads(content)['token_base_INA']
+
+    # 1.b. PARÁMETROS
+    with open('PAQUETES/EMAs_INA_sim_continua/config_exp/config.json', 'r') as f:
+        content = f.read()
+        if not content.strip():
+            print("El archivo config.json está vacío.")
+        else:
+            params = json.loads(content)
+    
+    inicio_sim = pd.to_datetime('2024-10-10 00:00', utc=True)# params['inicio_sim'],
+    fin_sim = pd.to_datetime('2024-10-13 00:00', utc=True)
+    dt_min = params['dt_minutos']
+    token_base_INA = token_base_INA
+    cell_coords = params['path_cell_coords']
+    ids_EMAs = params['ids_EMAs_consultadas']
+    spatial_interpolation = params['interpolacion_espacial'].lower()
+
+if True:
+# def consultar_emas_base_ina(
+#     inicio_sim, # Timestamp (UTC) del inicio de la simulación. Formato: yyyy-mm-dd hh:mm'
+#     fin_sim, # Timestamp (UTC) del fin de la simulación. Formato: yyyy-mm-dd hh:mm
+#     dt_min, # Paso temporal deseado en minutos.
+#     token_base_INA, # Token para tener acceso a la base INA
+#     cell_coords, # Ruta al .csv con las coordenadas de la grilla
+#     ids_EMAs = [3281, 3282, 3283, 3284, 3285, 3286, 3287, 3288, 3289, 3290, 3291, 3292, 3293, 3294, 3295, 3302, 3304, 3305, 2867, 2868, 2869, 2870, 3955, 3609, 3766, 3921, 3297, 3298, 3301, 3299, 3300], # Lista de ids de las EMAs de la base INA a consultar
+#     ):
 
     # # 1. PARSEAR INPUTS
     # # Crear el parser
@@ -141,3 +176,37 @@ def consultar_emas_base_ina(
     
         
     # 4. INTERPOLACIÓN ESPACIAL (THIESSEN O IDW). DE EMAs A CELDAS.
+    # a. Obtener coordenadas de cada una de las series con datos
+    ids = []
+    lats = []
+    lons = []
+    for id_serie in df.columns:
+        response = requests.get(
+            f"https://alerta.ina.gob.ar/a6/obs/puntual/series/{id_serie}", 
+            headers={'Authorization': f'Bearer {token_base_INA}'}
+        )
+        lat, lon = response.json()['estacion']['geom']['coordinates']
+        lats.append(lat)
+        lons.append(lon)
+        ids.append(id_serie)
+
+    gdf_data = gpd.GeoDataFrame(index=ids, geometry=gpd.points_from_xy(lon, lats), crs='EPSG:4326')
+
+    # b. Obtener la grilla donde interpolar valores
+    gdf_grid = pd.read_csv(params['path_cell_coords'], index_col=0)
+    gdf_grid['geometry'] = gdf_grid['Coordinates'].apply(wkt.loads)
+    gdf_grid = gpd.GeoDataFrame(gdf_grid, geometry='geometry')
+    gdf_grid.set_crs(epsg=params['epsg_precipitacion'], inplace=True)
+    gdf_grid = gdf_grid['geometry']
+
+    if spatial_interpolation == 'idw':
+        if 'idw_power' in params:
+            df_grid = spint.idw(df, geoseries_data=gdf_data, geoseries_grid=gdf_grid, 
+                                epsg = params['epsg_SWMM'], p = params['potencia_idw'])
+        else:
+            df_grid = spint.idw(df, geoseries_data=gdf_data, geoseries_grid=gdf_grid, 
+                                epsg = params['epsg_SWMM'], p = 2)   
+    
+    elif spatial_interpolation == 'thiessen':
+        df_grid = spint.thiessen(df, geoseries_data=gdf_data, geoseries_grid=gdf_grid,
+                                 epsg = params['epsg_SWMM'])
