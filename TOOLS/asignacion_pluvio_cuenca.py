@@ -28,68 +28,6 @@ def asignacion_pluvio_cuenca(
     inp_file_modificado = False, # Ruta al archivo .inp a modificar. Si no se define, se sobrescribe el .inp original
     ):
 
-# # 1. PARSEAR INPUTS
-# # Crear el parser
-# parser = argparse.ArgumentParser(description='Procesar .inp y NetCDF.')
-
-# # Definir argumentos
-# parser.add_argument('--inp_file', 
-#                     type = str, 
-#                     help = 'Ruta al archivo .inp a modificar.', 
-#                     default = 'Carpeta_base_SWMM/model_base.inp')
-
-# parser.add_argument('--nc_file', 
-#                     type = str, 
-#                     help = 'Ruta al archivo NetCDF del cual tomar la grilla.', 
-#                     default = glob('Carpeta_base_SWMM/*.nc')[0])
-
-# parser.add_argument('--inp_file_modificado', 
-#                     type = str, 
-#                     help = 'Ruta al archivo .inp a modificar. Si no se define, se sobrescribe el .inp original.', 
-#                     default ='False')
-
-# parser.add_argument('--cell_coords', 
-#                     type = str, 
-#                     help = 'Ruta donde exportar las coordenadas de cada celda.', 
-#                     default = 'Carpeta_base_SWMM/coordenadas_celdas.csv')
-
-# parser.add_argument('--crs_SWMM', 
-#                     type = int, 
-#                     help = 'Código EPSG del crs del modelo SWMM. Por defecto: 5347 (Posgar 2007 Faja 5)', 
-#                     default = 5347)
-
-# parser.add_argument('--crs_precipitacion', 
-#                     type = int, 
-#                     help = 'Código EPSG del crs del archivo de precipitación (.nc). Por defecto: 4326 (WGS84)', 
-#                     default = 4326)
-                    
-
-# # Parsear los argumentos
-# args = parser.parse_args()
-
-# inp_file = args.inp_file
-# nc_file = args.nc_file
-
-# if args.inp_file_modificado == False:
-#     inp_file_modificado = inp_file
-# else:
-#     inp_file_modificado = args.inp_file_modificado
-
-# epsg_SWMM = args.crs_SWMM
-# epsg_precipitacion = args.crs_precipitacion
-
-# path_cell_cords = args.cell_coords
-
-
-
-# inp_file = 'Carpeta_base_SWMM/model_base.inp'
-# nc_file = glob('Carpeta_base_SWMM/*.nc')[0]
-# inp_file_modificado = 'modelo_prueba.inp'
-# epsg_SWMM = 5347
-# epsg_precipitacion = 4326
-# path_cell_cords = 'Carpeta_base_SWMM/coordenadas_celdas.csv'
-
-
     # 1. DEFINIR SISTEMAS DE COORDENADAS
     crs_SWMM = pyproj.CRS.from_epsg(epsg_SWMM) # CRS Posgar 2007 Faja 5 (código EPSG: 5347)
     crs_netCDF = pyproj.CRS.from_epsg(epsg_precipitacion) # WGS84 (código EPSG: 4326)

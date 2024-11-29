@@ -19,113 +19,12 @@ import geopandas as gpd
 from shapely import wkt
 import UTILS.spatial_interpolation as spint
 
-if True:
-    #  0. DEFINIR PYTHONPATH (directorio raíz del repositorio)
-    repo_path = os.getenv('PYTHONPATH') # Obtener el directorio del repositorio desde la variable de entorno (archivo ".env")
-    if repo_path:
-        os.chdir(repo_path)
-
-    # 1. CONSULTAR ARCHIVOS .json DE CREDENCIALES Y PARÁMETROS
-    # 1.a. Credenciales
-    with open('credenciales.json', 'r') as f:
-        content = f.read()
-        if not content.strip():
-            print("El archivo credenciales.json está vacío.")
-        else:
-            token_base_INA = json.loads(content)['token_base_INA']
-
-    # 1.b. PARÁMETROS
-    with open('PAQUETES/EMAs_INA_sim_continua/config_exp/config.json', 'r') as f:
-        content = f.read()
-        if not content.strip():
-            print("El archivo config.json está vacío.")
-        else:
-            params = json.loads(content)
-    
-    inicio_sim = pd.to_datetime('2024-10-10 00:00', utc=True)# params['inicio_sim'],
-    fin_sim = pd.to_datetime('2024-10-13 00:00', utc=True)
-    dt_min = params['dt_minutos']
-    token_base_INA = token_base_INA
-    cell_coords = params['path_cell_coords']
-    ids_EMAs = params['ids_EMAs_consultadas']
-    spatial_interpolation = params['interpolacion_espacial'].lower()
-
-if True:
-# def consultar_emas_base_ina(
-#     inicio_sim, # Timestamp (UTC) del inicio de la simulación. Formato: yyyy-mm-dd hh:mm'
-#     fin_sim, # Timestamp (UTC) del fin de la simulación. Formato: yyyy-mm-dd hh:mm
-#     dt_min, # Paso temporal deseado en minutos.
-#     token_base_INA, # Token para tener acceso a la base INA
-#     cell_coords, # Ruta al .csv con las coordenadas de la grilla
-#     ids_EMAs = [3281, 3282, 3283, 3284, 3285, 3286, 3287, 3288, 3289, 3290, 3291, 3292, 3293, 3294, 3295, 3302, 3304, 3305, 2867, 2868, 2869, 2870, 3955, 3609, 3766, 3921, 3297, 3298, 3301, 3299, 3300], # Lista de ids de las EMAs de la base INA a consultar
-#     ):
-
-    # # 1. PARSEAR INPUTS
-    # # Crear el parser
-    # parser = argparse.ArgumentParser(description='Procesar archivos de entrada y NetCDF.')
-
-    # # Añadir los argumentos que esperas recibir
-    # parser.add_argument('inicio_sim', 
-    #                     type = str, 
-    #                     help = 'Timestamp (UTC) del inicio de la simulación. Formato: yyyy-mm-dd hh:mm'
-    #                     )
-
-    # parser.add_argument('fin_sim', 
-    #                     type = str, 
-    #                     help = 'Timestamp (UTC) del fin de la simulación. Formato: yyyy-mm-dd hh:mm'
-    #                     )
-
-    # parser.add_argument('dt_min', 
-    #                     type = int, 
-    #                     help = 'Paso temporal deseado en minutos.'
-    #                     )
-
-    # parser.add_argument('ids_EMAs',
-    #                     nargs = '+',
-    #                     type = int, 
-    #                     help = 'Lista de ids de las EMAs de la base INA a consultar.',
-    #                     default = [3281, 3282, 3283, 3284, 3285, 3286, 3287, 3288, 3289, 3290, 3291, 3292, 3293, 3294, 3295, 3302, 3304, 3305, 2867, 2868, 2869, 2870, 3955, 3609, 3766, 3921, 3297, 3298, 3301, 3299, 3300]
-    #                     )
-
-    # parser.add_argument('token_base_INA',
-    #                     type = 'str',
-    #                     help = 'Token para tener acceso a la base INA.'
-    #                     )
-
-    # parser.add_argument('--cell_coords', 
-    #                     type = str, 
-    #                     help = 'Ruta al .csv con las coordenadas de la grilla.',
-    #                     default = 'Carpeta_base_SWMM/coordenadas_celdas.csv'
-    #                     )
-
-    # # Parsear los argumentos
-    # args = parser.parse_args()
-
-    # inicio_sim = pd.to_datetime(args.inicio_sim, utc=True)
-    # fin_sim = pd.to_datetime(args.fin_sim, utc=True)
-    # dt_min = args.dt_min
-    # path_cell_cords = args.cell_coords
-    # ids_serie = args.ids_EMAs
-    # token_base_INA = args.token_base_INA
-
-# if True:
-
-#     repo_path = os.getenv('PYTHONPATH') # Obtener el directorio del repositorio desde la variable de entorno (archivo ".env")
-#     if repo_path:
-#         os.chdir(repo_path)
-#     inicio_sim = pd.to_datetime('2024-10-01 00:00', utc=True)
-#     fin_sim = pd.to_datetime('2024-10-01 01:00', utc=True)
-#     dt_min = 5
-#     path_cell_cords = 'Carpeta_base_SWMM/coordenadas_celdas.csv'
-#     ids_serie = [3281, 3282, 3283, 3284, 3285, 3286, 3287, 3288, 3289, 3290, 3291, 3292, 3293, 3294, 3295, 3302, 3304, 3305, 2867, 2868, 2869, 2870, 3955, 3609, 3766, 3921, 3297, 3298, 3301, 3299, 3300]
-#     with open('credenciales.json', 'r') as f:
-#         content = f.read()
-#         if not content.strip():
-#             print("El archivo credenciales.json está vacío.")
-#         else:
-#             token_base_INA = json.loads(content)['token_base_INA']
-
-
+def consultar_emas_base_ina(
+    inicio_sim, # Timestamp (UTC) del inicio de la simulación. Formato: yyyy-mm-dd hh:mm'
+    fin_sim, # Timestamp (UTC) del fin de la simulación. Formato: yyyy-mm-dd hh:mm
+    token_base_INA, # Token para tener acceso a la base INA
+    params, # diccionario de config.json
+    ):
 
     # 1. CONSULTA A LA BASE DEL INA
 
@@ -133,6 +32,8 @@ if True:
 
     inicio_sim = pd.to_datetime(inicio_sim, utc=True)
     fin_sim = pd.to_datetime(fin_sim, utc=True)
+
+    ids_EMAs = params['ids_EMAs_consultadas']
 
     for id_serie in ids_EMAs:
         print(id_serie)
@@ -172,7 +73,7 @@ if True:
 
     # d. Llevar a paso temporal deseado
     df = pd.concat(series, axis=1)
-    df = df.resample(f'{dt_min}min', origin='end').mean()
+    df = df.resample(f"{params['dt_minutos']}min", origin='end').mean()
     
         
     # 4. INTERPOLACIÓN ESPACIAL (THIESSEN O IDW). DE EMAs A CELDAS.
@@ -199,6 +100,7 @@ if True:
     gdf_grid.set_crs(epsg=params['epsg_precipitacion'], inplace=True)
     gdf_grid = gdf_grid['geometry']
 
+    spatial_interpolation = params['interpolacion_espacial']
     if spatial_interpolation == 'idw':
         if 'idw_power' in params:
             df_grid = spint.idw(df, geoseries_data=gdf_data, geoseries_grid=gdf_grid, 
