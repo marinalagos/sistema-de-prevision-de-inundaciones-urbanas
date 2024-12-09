@@ -55,7 +55,7 @@ def consultar_emas_base_ina(
             # print(df.timestart - df.timeend)
 
 
-    # 3. PREPROCESAMIENTO DATOS EMAs
+    # 2. PREPROCESAMIENTO DATOS EMAs
     series = []
     for df in dfs:
         # a. Identificar datos faltantes y completar con NaN
@@ -76,7 +76,7 @@ def consultar_emas_base_ina(
     df = df.resample(f"{params['dt_minutos']}min", origin='end').mean()
     
         
-    # 4. INTERPOLACIÓN ESPACIAL (THIESSEN O IDW). DE EMAs A CELDAS.
+    # 3. INTERPOLACIÓN ESPACIAL (THIESSEN O IDW). DE EMAs A CELDAS.
     # a. Obtener coordenadas de cada una de las series con datos
     ids = []
     lats = []
@@ -112,3 +112,5 @@ def consultar_emas_base_ina(
     elif spatial_interpolation == 'thiessen':
         df_grid = spint.thiessen(df, geoseries_data=gdf_data, geoseries_grid=gdf_grid,
                                  epsg = params['epsg_SWMM'])
+
+    return df_grid

@@ -3,7 +3,13 @@ import json
 from glob import glob
 from TOOLS.asignacion_pluvio_cuenca import asignacion_pluvio_cuenca
 from TOOLS.consultar_emas_base_ina import consultar_emas_base_ina
+from UTILS.utils_swmm import create_rainfall_file
 import pandas as pd
+
+
+inicio_sim = pd.to_datetime('2024-10-10 00:00', utc=True)
+fin_sim = pd.to_datetime('2024-10-13 00:00', utc=True)
+experimento = 'swmm_ssd_emas_ina'
 
 #  0. DEFINIR PYTHONPATH (directorio raíz del repositorio)
 repo_path = os.getenv('PYTHONPATH') # Obtener el directorio del repositorio desde la variable de entorno (archivo ".env")
@@ -37,13 +43,15 @@ asignacion_pluvio_cuenca(inp_file = params['inp_base'],
                          path_cell_coords = params['path_cell_coords'])
 
 # 3. CONSULTAR EMAs BASE INA
-grid_data = consultar_emas_base_ina(inicio_sim = pd.to_datetime('2024-10-10 00:00', utc=True),# params['inicio_sim'],
-                                    fin_sim = pd.to_datetime('2024-10-13 00:00', utc=True),
+grid_data = consultar_emas_base_ina(inicio_sim = inicio_sim,
+                                    fin_sim = fin_sim,
                                     token_base_INA = token_base_INA,
                                     params = params)
 
 # 4. GENERAR ARCHIVO DE PRECIPITACIÓN
+create_rainfall_file(data = grid_data,
+                     file_path = f'data/HIST/OBS/{inicio_sim:%Y/%m/%d/%H%M%S}/{experimento}/p.txt')
 
-# 4. CORRER SWMM
+# 5. CORRER SWMM
 # 
-# 5. GUARDAR OUTPUT
+# 6. GUARDAR OUTPUT
