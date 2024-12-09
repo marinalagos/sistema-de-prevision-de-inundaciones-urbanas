@@ -3,7 +3,7 @@ import json
 from glob import glob
 from TOOLS.asignacion_pluvio_cuenca import asignacion_pluvio_cuenca
 from TOOLS.consultar_emas_base_ina import consultar_emas_base_ina
-from UTILS.utils_swmm import create_rainfall_file
+from UTILS.utils_swmm.create_rainfall_file import create_rainfall_file
 import pandas as pd
 
 
@@ -50,7 +50,7 @@ grid_data = consultar_emas_base_ina(inicio_sim = inicio_sim,
 
 # 4. GENERAR ARCHIVO DE PRECIPITACIÓN
 create_rainfall_file(data = grid_data,
-                     file_path = f'data/HIST/OBS/{inicio_sim:%Y/%m/%d/%H%M%S}/{experimento}/p.txt')
+                     file_path = f'/data/HIST/OBS/{inicio_sim:%Y/%m/%d/%H%M%S}/{experimento}/p.txt')
 
 # 5. CORRER SWMM
 # 
