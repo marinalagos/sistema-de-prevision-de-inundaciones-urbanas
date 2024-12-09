@@ -1,0 +1,18 @@
+/data/HIST/POST/YYYY/MM/DD/HHmmss/experimento
+OBS  → hay un repositorio temporal con datos crudos y tambien las observaciones procesadas para usar en distintos experimentos
+PREP → hay archivos pre-procesados necesarios para la corrida de WRF (ejemplo el GFS con el formato especifico que necesita el WRF) (se podrán poner acá archivos necesarios para las corridas hidrológicas?)
+ASIM → estan los netcdf del WRF generados en el proceso de asimilación, son los análisis. (se podrán poner acá las salidas de los hidrologicos en la configuracion que corre de manera continua por ejemplo con RQPE?)
+FCST → estan los netcdf de los pronosticos del WRF (se podrán poner acá las salidas de los pronosticos hidrologicos?)
+POST → estan los netcdf/txt postprocesados de distintos experimentos del WRF (existen postprocesos de los hidrologicos o solo se usa el archivo nativo de salida?)
+PLOT → estan las figuras de distintos experimentos del WRF (se pueden poner figuras de los hidrologicos)
+
+
+TIPOS DE ARCHIVOS QUE TENEMOS
+- de precipitación (.dat o .txt) → OBS
+- hotstarts (.hsf) → PREP
+- inp → PREP
+- rpt → ASIM/FCST (según sean EMAs/RQPE o WRF/NOW)
+- out → ASIM/FCST (según sean EMAs/RQPE o WRF/NOW)
+
+# experimento swmm_ssd_emas_ina
+# asignación pluvio subcuencas se hace una sola vez, donde se crean los archivos necesarios de base: inp editable y coordenadas de celdas. Esos archivos se guardan dentro del repositorio.

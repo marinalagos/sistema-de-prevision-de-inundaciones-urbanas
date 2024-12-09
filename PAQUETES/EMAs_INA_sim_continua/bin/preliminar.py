@@ -42,5 +42,8 @@ grid_data = consultar_emas_base_ina(inicio_sim = pd.to_datetime('2024-10-10 00:0
                                     token_base_INA = token_base_INA,
                                     params = params)
 
+# 4. GENERAR ARCHIVO DE PRECIPITACIÓN
+
 # 4. CORRER SWMM
+# 
 # 5. GUARDAR OUTPUT
