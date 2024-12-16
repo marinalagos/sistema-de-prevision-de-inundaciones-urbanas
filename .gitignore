@@ -1,6 +1,7 @@
 credenciales.json
 auxiliares/
 99_Bibliografia/
+data/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
