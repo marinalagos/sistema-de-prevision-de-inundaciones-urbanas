@@ -52,6 +52,25 @@ grid_data = consultar_emas_base_ina(inicio_sim = inicio_sim,
 create_rainfall_file(data = grid_data,
                      file_path = f'data/HIST/OBS/{inicio_sim:%Y/%m/%d/%H%M%S}/{experimento}/')
 
+# 5. GENERAR ARCHIVO .inp
+# Modificar: 
+#  - fechas
+#       START_DATE           STARTDATE
+#       START_TIME           STARTTIME
+#       REPORT_START_DATE    REPORTSTDATE
+#       REPORT_START_TIME    REPORTSTTIME
+#       END_DATE             ENDDATE
+#       END_TIME             ENDTIME
+#  - ruta de archivos de precipitación
+#       RAINFALLFILEPATH
+#  - ruta donde buscar y guardar el hotstart
+#       SAVE HOTSTART HOTSTARTIN
+#       USE HOTSTART HOTSTARTOUT
+
+# 6. GENERAR ARCHIVO .sh
+# Modificar:
+#  - ruta donde guardar .out y .rpt
+#  - job_id
+
 # 5. CORRER SWMM
-# 
 # 6. GUARDAR OUTPUT
