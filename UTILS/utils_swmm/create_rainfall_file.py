@@ -1,12 +1,15 @@
-# INPUT:
-# - dataframe con datetimeindex donde cada columna está asociada a los datos de un raingage
-# - path del archivo de lluvia a generar
-# OUTPUT:
-# - Rainfall file con formato SWMM (STA01 2004 06 12 00 00 0.12). Es un único archivo con la info de todos los raingages.
-
 import os
 
 def create_rainfall_file(data, file_path):
+    """
+    Parameters:
+    - dataframe con datetimeindex donde cada columna está asociada a los datos de un raingage
+    - path del archivo de lluvia a generar
+    
+    Output:
+    - Rainfall file con formato SWMM (STA01 2004 06 12 00 00 0.12). Es un único archivo con la info de todos los raingages.
+    """
+
     lines = []
 
     columns = data.columns

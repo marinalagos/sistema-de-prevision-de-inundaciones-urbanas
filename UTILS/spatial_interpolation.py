@@ -47,6 +47,16 @@ import numpy as np
 
 
 def thiessen(data, geoseries_data, geoseries_grid, epsg):
+    """
+    Parameters:
+      - data: Datos de las estaciones puntuales
+      - geoseries_data: Coordenadas de las estaciones puntuales
+      - geoseries_grid: Coordenadas de la grilla
+      - EPSG
+    
+    Outputs:
+      - Datos asociados a las celdas de cada grilla
+    """
 
     # Definir proyección para el cálculo de la distancia
     gdf_data = geoseries_data.to_crs(epsg=epsg) 
@@ -77,6 +87,17 @@ def thiessen(data, geoseries_data, geoseries_grid, epsg):
     return grid_data
 
 def idw(data, geoseries_data, geoseries_grid, epsg, p=2):
+    """
+    Parameters:
+      - data: Datos de las estaciones puntuales
+      - geoseries_data: Coordenadas de las estaciones puntuales
+      - geoseries_grid: Coordenadas de la grilla
+      - EPSG
+      - potencia (IDW)
+    
+    Outputs:
+      - Datos asociados a las celdas de cada grilla
+    """
 
     # Definir proyección para el cálculo de la distancia
     gdf_data = geoseries_data.to_crs(epsg=epsg) 
@@ -97,10 +118,4 @@ def idw(data, geoseries_data, geoseries_grid, epsg, p=2):
     grid_data = pd.concat(grid_data, axis=1)
 
     return grid_data
-
-        # response1 = requests.get(
-        # f"https://alerta.ina.gob.ar/a6/obs/puntual/series/{id_serie}", 
-        # headers={'Authorization': f'Bearer {token_base_INA}'}, 
-        # params={}
-        # )
 
