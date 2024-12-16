@@ -132,11 +132,11 @@ def asignacion_pluvio_cuenca(
     cell_names = df_sub_cell[0].unique()
     df_rainfall = pd.DataFrame()
     df_rainfall['Name'] = cell_names
-    df_rainfall['Format'] = 'RAINFALL_FORMAT'
+    df_rainfall['Format'] = 'INTENSITY'
     df_rainfall['Interval'] = '0:10'
     df_rainfall['SCF'] = '1.0'
     df_rainfall['Source'] = 'FILE'
-    df_rainfall['filename'] = f'pp.txt'
+    df_rainfall['filename'] = f'RAINFALLFILEPATH/p.txt'
     df_rainfall['raingage'] = cell_names
     df_rainfall['unit'] = 'MM'
 
