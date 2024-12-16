@@ -136,7 +136,7 @@ def asignacion_pluvio_cuenca(
     df_rainfall['Interval'] = '0:10'
     df_rainfall['SCF'] = '1.0'
     df_rainfall['Source'] = 'FILE'
-    df_rainfall['filename'] = f'RAINFALLFILEPATH/p.txt'
+    df_rainfall['filename'] = f'"RAINFALLFILEPATH/p.txt"'
     df_rainfall['raingage'] = cell_names
     df_rainfall['unit'] = 'MM'
 

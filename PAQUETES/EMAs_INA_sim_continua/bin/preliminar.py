@@ -53,7 +53,8 @@ create_rainfall_file(data = grid_data,
                      file_path = f'data/HIST/OBS/{inicio_sim:%Y/%m/%d/%H%M%S}/{experimento}/')
 
 # 5. GENERAR ARCHIVO .inp
-# Modificar: 
+# Primero, encontrar último hotstart disponible
+# Después, modificar del .inp: 
 #  - fechas
 #       START_DATE           STARTDATE
 #       START_TIME           STARTTIME
@@ -74,3 +75,8 @@ create_rainfall_file(data = grid_data,
 
 # 5. CORRER SWMM
 # 6. GUARDAR OUTPUT
+
+# output_path = f'data/HIST/ASIM/{inicio_sim:%Y/%m/%d/%H%M%S}/{experimento}/'
+
+# if not os.path.exists(output_path): 
+#     os.makedirs(output_path) 
