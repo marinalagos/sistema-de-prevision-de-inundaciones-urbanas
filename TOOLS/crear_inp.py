@@ -1,5 +1,6 @@
 from UTILS.modify_textfile import modify_textfile
 import pandas as pd
+import os
 
 def crear_inp(inicio_sim, fin_sim, experimento, inp_base):
     # inicio_sim = pd.to_datetime('2024-07-09 00:00', utc=True)
