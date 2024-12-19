@@ -1,19 +1,12 @@
 from UTILS.modify_textfile import modify_textfile
-from UTILS.find_lastest_file import find_latest_file
 import pandas as pd
 import os
 
-def crear_inp(inicio_sim, fin_sim, experimento, inp_base):
+def crear_inp(inicio_sim, fin_sim, experimento, inp_base, path_hsf):
     # inicio_sim = pd.to_datetime('2024-07-09 01:00', utc=True)
     # fin_sim = pd.to_datetime('2024-10-13 00:00', utc=True)
     # experimento = 'swmm_ssd_emas_ina'
     # inp_base = 'Carpeta_base_SWMM/model_base_prueba.inp'
-
-    # Encontrar el hotstart de inicio, como el más reciente
-    path_lastest_hs = find_latest_file(root_dir = 'data/HIST/PREP/',
-                                       experimento = 'swmm_ssd_emas_ina',
-                                       file_name = 'hotstart.hsf')
-
 
     replacements= {"STARTDATE": inicio_sim.strftime("%m/%d/%Y"),
                    "STARTTIME": inicio_sim.strftime("%H:%M:%S"),
@@ -22,7 +15,7 @@ def crear_inp(inicio_sim, fin_sim, experimento, inp_base):
                    "ENDDATE": fin_sim.strftime("%m/%d/%Y"),
                    "ENDTIME": fin_sim.strftime("%H:%M:%S"),
                    "RAINFALLFILEPATH": f'data/HIST/OBS/{inicio_sim:%Y/%m/%d/%H%M%S}/{experimento}/p.txt',
-                   "HOTSTARTIN": f'{path_lastest_hs}/hotstart.hsf', 
+                   "HOTSTARTIN": f'{path_hsf}/hotstart.hsf', 
                    "HOTSTARTOUT": f'data/HIST/PREP/{fin_sim:%Y/%m/%d/%H%M%S}/{experimento}/hotstart.hsf'
                     }
 

@@ -3,7 +3,9 @@ import json
 from glob import glob
 from TOOLS.asignacion_pluvio_cuenca import asignacion_pluvio_cuenca
 from TOOLS.consultar_emas_base_ina import consultar_emas_base_ina
+from TOOLS.crear_inp import crear_inp
 from UTILS.utils_swmm.create_rainfall_file import create_rainfall_file
+from UTILS.find_lastest_file import find_latest_file
 import pandas as pd
 
 
@@ -53,20 +55,19 @@ create_rainfall_file(data = grid_data,
                      file_path = f'data/HIST/OBS/{inicio_sim:%Y/%m/%d/%H%M%S}/{experimento}/')
 
 # 5. GENERAR ARCHIVO .inp
-# Primero, encontrar último hotstart disponible
-# Después, modificar del .inp: 
-#  - fechas
-#       START_DATE           STARTDATE
-#       START_TIME           STARTTIME
-#       REPORT_START_DATE    REPORTSTDATE
-#       REPORT_START_TIME    REPORTSTTIME
-#       END_DATE             ENDDATE
-#       END_TIME             ENDTIME
-#  - ruta de archivos de precipitación
-#       RAINFALLFILEPATH
-#  - ruta donde buscar y guardar el hotstart
-#       SAVE HOTSTART HOTSTARTIN
-#       USE HOTSTART HOTSTARTOUT
+
+# 5.a. Encontrar el hotstart de inicio, como el más reciente
+path_lastest_hsf = find_latest_file(root_dir = 'data/HIST/PREP/',
+                                    experimento = 'swmm_ssd_emas_ina',
+                                    file_name = 'hotstart.hsf')
+
+# 5.b. Crear archivo .inp
+crear_inp(inicio_sim = inicio_sim,
+          fin_sim = fin_sim,
+          experimento = experimento,
+          inp_base = params['inp_modificado'],
+          path_hsf = path_lastest_hsf)
+
 
 # 6. GENERAR ARCHIVO .sh
 # Modificar:
