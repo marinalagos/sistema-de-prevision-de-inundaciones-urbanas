@@ -6,6 +6,7 @@ from TOOLS.consultar_emas_base_ina import consultar_emas_base_ina
 from TOOLS.crear_inp import crear_inp
 from UTILS.utils_swmm.create_rainfall_file import create_rainfall_file
 from UTILS.find_lastest_file import find_latest_file
+from UTILS.utils_swmm.create_slurm_file import create_slurm_file
 import pandas as pd
 
 
@@ -70,9 +71,14 @@ crear_inp(inicio_sim = inicio_sim,
 
 
 # 6. GENERAR ARCHIVO .sh
-# Modificar:
-#  - ruta donde guardar .out y .rpt
-#  - job_id
+create_slurm_file(path_slurm_file = 'PAQUETES/bin/run_swmm.sh',
+                  pathdir_model = f'data/HIST/PREP/{inicio_sim:%Y/%m/%d/%H%M%S}/{experimento}/',
+                  path_swmm = params['swmmexe'],
+                  jobname = 'jobname',
+                  logfile = 'log,txt',
+                  nodelist = params['nodelist'],
+                  cpupertask = params['cpupertask']
+                  )
 
 # 5. CORRER SWMM
 # 6. GUARDAR OUTPUT

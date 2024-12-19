@@ -8,5 +8,8 @@
 	"ids_EMAs_consultadas": [3281, 3282, 3283, 3284, 3285, 3286, 3287, 3288, 3289, 3290, 3291, 3292, 3293, 3294, 3295, 3302, 3304, 3305, 2867, 2868, 2869, 2870, 3955, 3609, 3766, 3921, 3297, 3298, 3301, 3299, 3300],
 	"dt_minutos": 10,
 	"interpolacion_espacial": "idw",
-	"potencia_idw": 2
+	"potencia_idw": 2,
+	"swmmexe": "MODELS/swmm5_1-011-cluster",
+	"nodelist": "compute-0-[22-24]",
+	"cpupertask": 4
 }
