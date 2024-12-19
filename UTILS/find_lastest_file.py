@@ -1,9 +1,9 @@
 import os
 
-def find_latest_file(root_dir, experimento, file_extension):
+def find_latest_file(root_dir, experimento, file_name):
     """
     Busca de manera eficiente la carpeta 'experimento' más reciente (según la jerarquía YYYY/MM/DD/HHmmss) 
-    dentro de 'root_dir' que contenga al menos un archivo con la extensión requerida.
+    dentro de 'root_dir' que contenga un archivo con el nombre especificado.
     La búsqueda se detiene tan pronto como encuentra un archivo válido.
     """
     # Obtener los años en orden descendente
@@ -33,8 +33,8 @@ def find_latest_file(root_dir, experimento, file_extension):
                     # Buscar la carpeta "experimento"
                     experimento_path = os.path.join(hour_path, experimento)
                     if os.path.isdir(experimento_path):
-                        # Verificar si hay un archivo .hsf
-                        if any(file.endswith(file_extension) for file in os.listdir(experimento_path)):
+                        # Verificar si existe un archivo con el nombre especificado
+                        if file_name in os.listdir(experimento_path):
                             return experimento_path
 
     return None  # Si no se encontró nada
