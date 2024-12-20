@@ -5,7 +5,7 @@ from TOOLS.asignacion_pluvio_cuenca import asignacion_pluvio_cuenca
 from TOOLS.consultar_emas_base_ina import consultar_emas_base_ina
 from TOOLS.crear_inp import crear_inp
 from UTILS.utils_swmm.create_rainfall_file import create_rainfall_file
-from UTILS.find_lastest_file import find_latest_file
+from UTILS.find_dir_lastest_file import find_dir_latest_file
 from UTILS.utils_swmm.create_slurm_file import create_slurm_file
 import pandas as pd
 
@@ -67,12 +67,12 @@ crear_inp(inicio_sim = inicio_sim,
           fin_sim = fin_sim,
           experimento = experimento,
           inp_base = params['inp_modificado'],
-          pathdir_hsf = path_lastest_hsf)
+          pathdir_hsf = pathdir_lastest_hsf)
 
 # 5.c. Crear la carpeta para el hotstart de salida
 pathdir_out_hsf = f'data/HIST/PREP/{fin_sim:%Y/%m/%d/%H%M%S}/{experimento}/'
-if not os.path.exists(output_path): 
-    os.makedirs(output_path)
+if not os.path.exists(pathdir_out_hsf): 
+    os.makedirs(pathdir_out_hsf)
 
 
 # 6. GENERAR ARCHIVO .sh
@@ -81,7 +81,7 @@ create_slurm_file(path_slurm_file = f'PAQUETES/{experimento}/bin/run_swmm.sh',
                   pathdir_model = f'data/HIST/PREP/{inicio_sim:%Y/%m/%d/%H%M%S}/{experimento}/',
                   pathdir_out = f'data/HIST/ASIM/{inicio_sim:%Y/%m/%d/%H%M%S}/{experimento}/',
                   jobname = f'{experimento}_{inicio_sim:%Y%m%d%H%M}',
-                  # PENSAR SI HAY ALGUNA UBICACIÓN MEJOR PARA ESTO
+                  # PENSAR SI HAY ALGUNA UBICACIÓN MEJOR PARA EL LOG
                   logfile = f'data/HIST/ASIM/{inicio_sim:%Y/%m/%d/%H%M%S}/{experimento}/log.txt',
                   nodelist = params['nodelist'],
                   cpupertask = params['cpupertask']
