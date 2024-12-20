@@ -33,8 +33,8 @@ with open(f'PAQUETES/{experimento}/config_exp/config.json', 'r') as f:
     else:
         params = json.loads(content)
 
-inicio_sim = pd.to_datetime('2024-12-19 04:00', utc=True)
-fin_sim = inicio_sim + pd.Timedelta(minutes = params['frequencia_min'])
+inicio_sim = pd.to_datetime('2024-03-19 23:30', utc=True)
+fin_sim = inicio_sim + pd.Timedelta(minutes = params['frecuencia_min'])
 
 # 2. ASIGNACIÓN PLUVIO CUENCA
 asignacion_pluvio_cuenca(inp_file = params['inp_base'],
