@@ -10,8 +10,8 @@ from UTILS.utils_swmm.create_slurm_file import create_slurm_file
 import pandas as pd
 
 
-inicio_sim = pd.to_datetime('2024-10-10 00:00', utc=True)
-fin_sim = pd.to_datetime('2024-10-13 00:00', utc=True)
+inicio_sim = pd.to_datetime('2024-12-19 04:00', utc=True)
+fin_sim = pd.to_datetime('2024-12-19 05:00', utc=True)
 experimento = 'swmm_ssd_emas_ina'
 
 #  0. DEFINIR PYTHONPATH (directorio raíz del repositorio)
@@ -29,7 +29,7 @@ with open('credenciales.json', 'r') as f:
         token_base_INA = json.loads(content)['token_base_INA']
 
 # 1.b. PARÁMETROS
-with open('PAQUETES/EMAs_INA_sim_continua/config_exp/config.json', 'r') as f:
+with open(f'PAQUETES/{experimento}/config_exp/config.json', 'r') as f:
     content = f.read()
     if not content.strip():
         print("El archivo config.json está vacío.")
@@ -58,24 +58,31 @@ create_rainfall_file(data = grid_data,
 # 5. GENERAR ARCHIVO .inp
 
 # 5.a. Encontrar el hotstart de inicio, como el más reciente
-path_lastest_hsf = find_latest_file(root_dir = 'data/HIST/PREP/',
-                                    experimento = 'swmm_ssd_emas_ina',
-                                    file_name = 'hotstart.hsf')
+pathdir_lastest_hsf = find_dir_latest_file(root_dir = 'data/HIST/PREP/',
+                                           experimento = 'swmm_ssd_emas_ina',
+                                           file_name = 'hotstart.hsf')
 
 # 5.b. Crear archivo .inp
 crear_inp(inicio_sim = inicio_sim,
           fin_sim = fin_sim,
           experimento = experimento,
           inp_base = params['inp_modificado'],
-          path_hsf = path_lastest_hsf)
+          pathdir_hsf = path_lastest_hsf)
+
+# 5.c. Crear la carpeta para el hotstart de salida
+pathdir_out_hsf = f'data/HIST/PREP/{fin_sim:%Y/%m/%d/%H%M%S}/{experimento}/'
+if not os.path.exists(output_path): 
+    os.makedirs(output_path)
 
 
 # 6. GENERAR ARCHIVO .sh
-create_slurm_file(path_slurm_file = 'PAQUETES/bin/run_swmm.sh',
-                  pathdir_model = f'data/HIST/PREP/{inicio_sim:%Y/%m/%d/%H%M%S}/{experimento}/',
+create_slurm_file(path_slurm_file = f'PAQUETES/{experimento}/bin/run_swmm.sh',
                   path_swmm = params['swmmexe'],
-                  jobname = 'jobname',
-                  logfile = 'log,txt',
+                  pathdir_model = f'data/HIST/PREP/{inicio_sim:%Y/%m/%d/%H%M%S}/{experimento}/',
+                  pathdir_out = f'data/HIST/ASIM/{inicio_sim:%Y/%m/%d/%H%M%S}/{experimento}/',
+                  jobname = f'{experimento}_{inicio_sim:%Y%m%d%H%M}',
+                  # PENSAR SI HAY ALGUNA UBICACIÓN MEJOR PARA ESTO
+                  logfile = f'data/HIST/ASIM/{inicio_sim:%Y/%m/%d/%H%M%S}/{experimento}/log.txt',
                   nodelist = params['nodelist'],
                   cpupertask = params['cpupertask']
                   )
@@ -86,4 +93,4 @@ create_slurm_file(path_slurm_file = 'PAQUETES/bin/run_swmm.sh',
 # output_path = f'data/HIST/ASIM/{inicio_sim:%Y/%m/%d/%H%M%S}/{experimento}/'
 
 # if not os.path.exists(output_path): 
-#     os.makedirs(output_path) 
+#     os.makedirs(output_path) # PENSAR QUE VA ACA!!!!

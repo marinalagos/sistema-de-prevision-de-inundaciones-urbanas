@@ -2,7 +2,7 @@ from UTILS.modify_textfile import modify_textfile
 import pandas as pd
 import os
 
-def crear_inp(inicio_sim, fin_sim, experimento, inp_base, path_hsf):
+def crear_inp(inicio_sim, fin_sim, experimento, inp_base, pathdir_hsf):
     # inicio_sim = pd.to_datetime('2024-07-09 01:00', utc=True)
     # fin_sim = pd.to_datetime('2024-10-13 00:00', utc=True)
     # experimento = 'swmm_ssd_emas_ina'
@@ -15,7 +15,7 @@ def crear_inp(inicio_sim, fin_sim, experimento, inp_base, path_hsf):
                    "ENDDATE": fin_sim.strftime("%m/%d/%Y"),
                    "ENDTIME": fin_sim.strftime("%H:%M:%S"),
                    "RAINFALLFILEPATH": f'data/HIST/OBS/{inicio_sim:%Y/%m/%d/%H%M%S}/{experimento}/p.txt',
-                   "HOTSTARTIN": f'{path_hsf}/hotstart.hsf', 
+                   "HOTSTARTIN": f'{pathdir_hsf}/hotstart.hsf', 
                    "HOTSTARTOUT": f'data/HIST/PREP/{fin_sim:%Y/%m/%d/%H%M%S}/{experimento}/hotstart.hsf'
                     }
 

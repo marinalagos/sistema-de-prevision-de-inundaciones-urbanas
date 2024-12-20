@@ -1,6 +1,6 @@
 import os
 
-def find_latest_file(root_dir, experimento, file_name):
+def find_dir_latest_file(root_dir, experimento, file_name):
     """
     Busca de manera eficiente la carpeta 'experimento' más reciente (según la jerarquía YYYY/MM/DD/HHmmss) 
     dentro de 'root_dir' que contenga un archivo con el nombre especificado.
