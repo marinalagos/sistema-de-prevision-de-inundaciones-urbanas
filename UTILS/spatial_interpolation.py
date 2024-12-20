@@ -113,6 +113,7 @@ def idw(data, geoseries_data, geoseries_grid, epsg, p=2):
         for id, w in weights.items():
             values.append(data[(id)]*w)
         cell_series = sum(values).rename(index)
+        cell_series = cell_series/sum(weights)
         grid_data.append(cell_series)
     
     grid_data = pd.concat(grid_data, axis=1)
