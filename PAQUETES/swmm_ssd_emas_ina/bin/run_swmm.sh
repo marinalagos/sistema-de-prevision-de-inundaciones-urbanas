@@ -1,9 +1,9 @@
 #!/bin/bash
 #
 #SBATCH --cpus-per-task=4
-#SBATCH --job-name=swmm_ssd_emas_ina_202403190000
-#SBATCH --output=data/HIST/ASIM/2024/03/19/000000/swmm_ssd_emas_ina/log.txt
+#SBATCH --job-name=swmm_ssd_emas_ina_202403192330
+#SBATCH --output=data/HIST/ASIM/2024/03/19/233000/swmm_ssd_emas_ina/log.txt
 #SBATCH --time=192:00:00
 #SBATCH --nodelist=compute-0-[22-24]
 
-srun MODELS/swmm5_1-011-cluster data/HIST/PREP/2024/03/19/000000/swmm_ssd_emas_ina//model.inp data/HIST/ASIM/2024/03/19/000000/swmm_ssd_emas_ina//model.rpt data/HIST/ASIM/2024/03/19/000000/swmm_ssd_emas_ina//model.out
+srun MODELS/swmm5_1-011-cluster data/HIST/PREP/2024/03/19/233000/swmm_ssd_emas_ina//model.inp data/HIST/ASIM/2024/03/19/233000/swmm_ssd_emas_ina//model.rpt data/HIST/ASIM/2024/03/19/233000/swmm_ssd_emas_ina//model.out
