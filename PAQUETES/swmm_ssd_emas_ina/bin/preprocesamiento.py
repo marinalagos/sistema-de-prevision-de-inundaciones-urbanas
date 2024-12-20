@@ -85,11 +85,3 @@ create_slurm_file(path_slurm_file = f'PAQUETES/{experimento}/bin/run_swmm.sh',
                   nodelist = params['nodelist'],
                   cpupertask = params['cpupertask']
                   )
-
-# 5. CORRER SWMM
-# 6. GUARDAR OUTPUT
-
-# output_path = f'data/HIST/ASIM/{inicio_sim:%Y/%m/%d/%H%M%S}/{experimento}/'
-
-# if not os.path.exists(output_path): 
-#     os.makedirs(output_path) # PENSAR QUE VA ACA!!!!
