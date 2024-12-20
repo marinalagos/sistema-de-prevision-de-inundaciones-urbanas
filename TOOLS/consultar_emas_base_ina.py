@@ -91,7 +91,7 @@ def consultar_emas_base_ina(
         lons.append(lon)
         ids.append(id_serie)
 
-    gdf_data = gpd.GeoDataFrame(index=ids, geometry=gpd.points_from_xy(lon, lats), crs='EPSG:4326')
+    gdf_data = gpd.GeoDataFrame(index=ids, geometry=gpd.points_from_xy(lons, lats), crs='EPSG:4326')
 
     # b. Obtener la grilla donde interpolar valores
     gdf_grid = pd.read_csv(params['path_cell_coords'], index_col=0)
