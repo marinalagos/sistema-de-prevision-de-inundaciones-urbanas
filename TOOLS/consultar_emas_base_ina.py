@@ -86,7 +86,7 @@ def consultar_emas_base_ina(
             f"https://alerta.ina.gob.ar/a6/obs/puntual/series/{id_serie}", 
             headers={'Authorization': f'Bearer {token_base_INA}'}
         )
-        lat, lon = response.json()['estacion']['geom']['coordinates']
+        lon, lat = response.json()['estacion']['geom']['coordinates']
         lats.append(lat)
         lons.append(lon)
         ids.append(id_serie)
