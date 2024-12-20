@@ -9,9 +9,6 @@ from UTILS.find_dir_lastest_file import find_dir_latest_file
 from UTILS.utils_swmm.create_slurm_file import create_slurm_file
 import pandas as pd
 
-
-inicio_sim = pd.to_datetime('2024-12-19 04:00', utc=True)
-fin_sim = pd.to_datetime('2024-12-19 05:00', utc=True)
 experimento = 'swmm_ssd_emas_ina'
 
 #  0. DEFINIR PYTHONPATH (directorio raíz del repositorio)
@@ -36,6 +33,8 @@ with open(f'PAQUETES/{experimento}/config_exp/config.json', 'r') as f:
     else:
         params = json.loads(content)
 
+inicio_sim = pd.to_datetime('2024-12-19 04:00', utc=True)
+fin_sim = inicio_sim + pd.Timedelta(minutes = params['frequencia_min'])
 
 # 2. ASIGNACIÓN PLUVIO CUENCA
 asignacion_pluvio_cuenca(inp_file = params['inp_base'],

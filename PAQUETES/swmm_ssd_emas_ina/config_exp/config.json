@@ -11,5 +11,6 @@
 	"potencia_idw": 2,
 	"swmmexe": "MODELS/swmm5_1-011-cluster",
 	"nodelist": "compute-0-[22-24]",
-	"cpupertask": 4
+	"cpupertask": 4,
+	"frecuencia_min": 30
 }
