@@ -92,7 +92,7 @@ def idw(data, geoseries_data, geoseries_grid, epsg, p=2):
       - data: Datos de las estaciones puntuales
       - geoseries_data: Coordenadas de las estaciones puntuales
       - geoseries_grid: Coordenadas de la grilla
-      - EPSG
+      - EPSG: tienen que ser coordenas proyectadas para poder medir distancias.
       - potencia (IDW)
     
     Outputs:
