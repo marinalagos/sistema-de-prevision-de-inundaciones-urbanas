@@ -45,10 +45,16 @@ asignacion_pluvio_cuenca(inp_file = params['inp_base'],
                          path_cell_coords = params['path_cell_coords'])
 
 # 3. CONSULTAR EMAs BASE INA
+if params['save_rainfall_raw_data']:
+    path_raw_data = f'data/HIST/OBS/{inicio_sim:%Y/%m/%d/%H%M%S}/{experimento}/p_base_ina.json'
+else:
+    path_raw_data = False
+
 grid_data = consultar_emas_base_ina(inicio_sim = inicio_sim,
                                     fin_sim = fin_sim,
                                     token_base_INA = token_base_INA,
-                                    params = params)
+                                    params = params,
+                                    path_raw_data = path_raw_data)
 
 # 4. GENERAR ARCHIVO DE PRECIPITACIÓN
 create_rainfall_file(data = grid_data,
