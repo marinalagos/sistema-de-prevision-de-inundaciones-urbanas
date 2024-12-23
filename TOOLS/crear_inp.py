@@ -14,7 +14,7 @@ def crear_inp(inicio_sim, fin_sim, experimento, inp_base, pathdir_hsf):
                    "REPORTSTTIME": inicio_sim.strftime("%H:%M:%S"),
                    "ENDDATE": fin_sim.strftime("%m/%d/%Y"),
                    "ENDTIME": fin_sim.strftime("%H:%M:%S"),
-                   "RAINFALLFILEPATH": f'data/HIST/OBS/{inicio_sim:%Y/%m/%d/%H%M%S}/{experimento}/p.txt',
+                   "RAINFALLFILEPATH": f'data/HIST/PREP/{inicio_sim:%Y/%m/%d/%H%M%S}/{experimento}/p.txt',
                    "HOTSTARTIN": f'{pathdir_hsf}/hotstart.hsf', 
                    "HOTSTARTOUT": f'data/HIST/PREP/{fin_sim:%Y/%m/%d/%H%M%S}/{experimento}/hotstart.hsf'
                     }
