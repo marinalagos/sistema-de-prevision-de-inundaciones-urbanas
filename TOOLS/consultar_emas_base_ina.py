@@ -86,7 +86,20 @@ def consultar_emas_base_ina(
     df = pd.concat(series, axis=1)
     df = df.resample(f"{params['dt_precipitacion_minutos']}min", origin='end').mean()
     
-        
+    # e. Correr un delta t para cumplir con el formato de SWMM
+
+    # SWMM’s rainfall Time Series and user-prepared Rainfall files treat the data as “start-of-interval”
+    # values, meaning that each rainfall intensity or depth is assumed to occur at the start of its associated
+    # date/time value and last for a period of time equal to the gage’s recording interval. Most rainfall
+    # recording devices report their readings as “end-of-interval” values, meaning that the time stamp
+    # associated with a rainfall value is for the end of the recording interval. If such data are being used
+    # to populate a SWMM rainfall time series or user-prepared rainfall file then their date/time values
+    # should be shifted back one recording interval to make them represent “start-of-interval” values
+    # (e.g., for hourly rainfall, a reading with a time stamp of 10:00 am should be entered into the time
+    # series or file as a 9:00 am value).
+
+    df.index = df.index.shift(-1)
+
     # 3. INTERPOLACIÓN ESPACIAL (THIESSEN O IDW). DE EMAs A CELDAS.
     # a. Obtener coordenadas de cada una de las series con datos
     ids = []
