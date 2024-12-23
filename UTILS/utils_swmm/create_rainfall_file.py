@@ -17,7 +17,6 @@ def create_rainfall_file(data, file_path):
     data['formatted_date'] = data.index.strftime("%Y\t%m\t%d\t%H\t%M")
 
     for P in columns:
-        print(data[P])
         data['str'] = P + '\t' + data['formatted_date'] + '\t' + data[P].round(2).astype(str)
         lines = lines + list(data['str'])
 
