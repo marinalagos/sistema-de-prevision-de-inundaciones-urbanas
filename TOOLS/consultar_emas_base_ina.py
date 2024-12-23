@@ -24,11 +24,13 @@ def consultar_emas_base_ina(
     fin_sim, # Timestamp (UTC) del fin de la simulación. Formato: yyyy-mm-dd hh:mm
     token_base_INA, # Token para tener acceso a la base INA
     params, # diccionario de config.json
+    path_raw_data = False
     ):
 
     # 1. CONSULTA A LA BASE DEL INA
 
     dfs = []
+    jsons = []
 
     inicio_sim = pd.to_datetime(inicio_sim, utc=True)
     fin_sim = pd.to_datetime(fin_sim, utc=True)
@@ -46,6 +48,7 @@ def consultar_emas_base_ina(
         )
         df = pd.DataFrame(response.json())
         if not df.empty:
+            jsons += response.json()
             df = df.rename(columns={'valor': id_serie})
             df = df[['timestart', 'timeend', id_serie]]
             df.timestart = pd.to_datetime(df.timestart)
@@ -53,6 +56,10 @@ def consultar_emas_base_ina(
             dfs.append(df)
             # j = response.json()
             # print(df.timestart - df.timeend)
+
+    if path_raw_data != False:
+        with open(path_raw_data, "w") as file:
+            json.dump(jsons, file, indent=4, ensure_ascii=False)
 
 
     # 2. PREPROCESAMIENTO DATOS EMAs
