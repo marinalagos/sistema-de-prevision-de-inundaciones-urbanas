@@ -25,6 +25,6 @@ def create_rainfall_file(data, file_path):
     if not os.path.exists(file_path): 
         os.makedirs(file_path) 
 
-    f = open(file_path + '/p.txt','w')
+    f = open(file_path,'w')
     f.write(texto)
     f.close()

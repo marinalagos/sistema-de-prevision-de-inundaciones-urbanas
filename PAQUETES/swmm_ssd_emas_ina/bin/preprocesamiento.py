@@ -58,7 +58,7 @@ grid_data = consultar_emas_base_ina(inicio_sim = inicio_sim,
 
 # 4. GENERAR ARCHIVO DE PRECIPITACIÓN
 create_rainfall_file(data = grid_data,
-                     file_path = f'data/HIST/PREP/{inicio_sim:%Y/%m/%d/%H%M%S}/{experimento}/')
+                     file_path = f'data/HIST/PREP/{inicio_sim:%Y/%m/%d/%H%M%S}/{experimento}/p.txt')
 
 # 5. GENERAR ARCHIVO .inp
 
