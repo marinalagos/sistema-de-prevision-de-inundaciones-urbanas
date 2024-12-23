@@ -12,5 +12,6 @@
 	"swmmexe": "MODELS/swmm5_1-011-cluster",
 	"nodelist": "compute-0-[22-24]",
 	"cpupertask": 4,
-	"frecuencia_min": 30
+	"frecuencia_min": 30,
+	"save_rainfall_raw_data": true
 }
