@@ -72,7 +72,8 @@ crear_inp(inicio_sim = inicio_sim,
           fin_sim = fin_sim,
           experimento = experimento,
           inp_base = params['inp_modificado'],
-          pathdir_hsf = pathdir_lastest_hsf)
+          pathdir_hsf = pathdir_lastest_hsf,
+          dt_precipitacion_minutos = params['dt_precipitacion_minutos'])
 
 # 5.c. Crear la carpeta para el hotstart de salida
 pathdir_out_hsf = f'data/HIST/PREP/{fin_sim:%Y/%m/%d/%H%M%S}/{experimento}/'

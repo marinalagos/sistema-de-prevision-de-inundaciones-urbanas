@@ -133,7 +133,7 @@ def asignacion_pluvio_cuenca(
     df_rainfall = pd.DataFrame()
     df_rainfall['Name'] = cell_names
     df_rainfall['Format'] = 'INTENSITY'
-    df_rainfall['Interval'] = '0:10'
+    df_rainfall['Interval'] = 'INTERVAL_MINUTES'
     df_rainfall['SCF'] = '1.0'
     df_rainfall['Source'] = 'FILE'
     df_rainfall['filename'] = f'"RAINFALLFILEPATH"'

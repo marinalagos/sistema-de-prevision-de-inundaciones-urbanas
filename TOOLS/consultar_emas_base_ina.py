@@ -84,7 +84,7 @@ def consultar_emas_base_ina(
 
     # d. Llevar a paso temporal deseado
     df = pd.concat(series, axis=1)
-    df = df.resample(f"{params['dt_minutos']}min", origin='end').mean()
+    df = df.resample(f"{params['dt_precipitacion_minutos']}min", origin='end').mean()
     
         
     # 3. INTERPOLACIÓN ESPACIAL (THIESSEN O IDW). DE EMAs A CELDAS.
