@@ -75,8 +75,12 @@ crear_inp(inicio_sim = inicio_sim,
           pathdir_hsf = pathdir_lastest_hsf,
           dt_precipitacion_minutos = params['dt_precipitacion_minutos'])
 
-# 5.c. Crear la carpeta para el hotstart de salida
+# 5.c. Crear la carpeta para el hotstart de salida y para los outputs
 pathdir_out_hsf = f'data/HIST/PREP/{fin_sim:%Y/%m/%d/%H%M%S}/{experimento}/'
+if not os.path.exists(pathdir_out_hsf): 
+    os.makedirs(pathdir_out_hsf)
+
+pathdir_out_hsf = f'data/HIST/ASIM/{inicio_sim:%Y/%m/%d/%H%M%S}/{experimento}/'
 if not os.path.exists(pathdir_out_hsf): 
     os.makedirs(pathdir_out_hsf)
 
