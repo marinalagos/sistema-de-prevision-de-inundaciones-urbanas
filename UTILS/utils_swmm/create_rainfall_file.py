@@ -22,8 +22,9 @@ def create_rainfall_file(data, file_path):
 
     texto = '\n'.join(lines)
 
-    if not os.path.exists(file_path): 
-        os.makedirs(file_path) 
+    dir_path = os.path.dirname(file_path)
+    if not os.path.exists(dir_path): 
+        os.makedirs(dir_path) 
 
     f = open(file_path,'w')
     f.write(texto)
