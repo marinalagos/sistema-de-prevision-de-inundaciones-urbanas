@@ -58,6 +58,10 @@ def consultar_emas_base_ina(
             # print(df.timestart - df.timeend)
 
     if path_raw_data != False:
+        dir_path = os.path.dirname(path_raw_data)
+        if not os.path.exists(dir_path): 
+            os.makedirs(dir_path) 
+
         with open(path_raw_data, "w") as file:
             json.dump(jsons, file, indent=4, ensure_ascii=False)
 
