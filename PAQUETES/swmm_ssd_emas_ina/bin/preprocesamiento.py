@@ -8,8 +8,21 @@ from UTILS.utils_swmm.create_rainfall_file import create_rainfall_file
 from UTILS.find_dir_lastest_file import find_dir_latest_file
 from UTILS.utils_swmm.create_slurm_file import create_slurm_file
 import pandas as pd
+import argparse
 
 experimento = 'swmm_ssd_emas_ina'
+
+#  0. DEFINIR LA FECHA
+
+parser = argparse.ArgumentParser(description="Script de preprocesamiento")
+parser.add_argument("--inicio_sim", required=True, help="Timestamp en formato YYYY-MM-DDTHH:MM:SSZ")
+args = parser.parse_args()
+inicio_sim = args.inicio_sim
+inicio_sim = pd.to_datetime(inicio_sim)
+print(f"Inicio simulación: {inicio_sim}")
+
+# inicio_sim = pd.to_datetime('2024-12-26 19:00', utc=True)
+fin_sim = inicio_sim + pd.Timedelta(minutes = params['frecuencia_min'])
 
 #  0. DEFINIR PYTHONPATH (directorio raíz del repositorio)
 repo_path = os.getenv('PYTHONPATH') # Obtener el directorio del repositorio desde la variable de entorno (archivo ".env")
@@ -32,9 +45,6 @@ with open(f'PAQUETES/{experimento}/config_exp/config.json', 'r') as f:
         print("El archivo config.json está vacío.")
     else:
         params = json.loads(content)
-
-inicio_sim = pd.to_datetime('2024-12-26 19:00', utc=True)
-fin_sim = inicio_sim + pd.Timedelta(minutes = params['frecuencia_min'])
 
 # 2. ASIGNACIÓN PLUVIO CUENCA
 asignacion_pluvio_cuenca(inp_file = params['inp_base'],

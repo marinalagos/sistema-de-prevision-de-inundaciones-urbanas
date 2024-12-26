@@ -4,7 +4,17 @@ import json
 import datetime
 
 experimento = 'swmm_ssd_emas_ina'
-inicio_sim = pd.to_datetime('2024-03-19 23:30', utc=True)
+
+#  0. DEFINIR LA FECHA
+
+parser = argparse.ArgumentParser(description="Script de preprocesamiento")
+parser.add_argument("--inicio_sim", required=True, help="Timestamp en formato YYYY-MM-DDTHH:MM:SSZ")
+args = parser.parse_args()
+inicio_sim = args.inicio_sim
+inicio_sim = pd.to_datetime(inicio_sim)
+print(f"Inicio simulación: {inicio_sim}")
+
+# inicio_sim = pd.to_datetime('2024-03-19 23:30', utc=True)
 
 #  0. DEFINIR PYTHONPATH (directorio raíz del repositorio)
 repo_path = os.getenv('PYTHONPATH') # Obtener el directorio del repositorio desde la variable de entorno (archivo ".env")
