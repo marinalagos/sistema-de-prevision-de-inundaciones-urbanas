@@ -22,7 +22,6 @@ inicio_sim = pd.to_datetime(inicio_sim)
 print(f"Inicio simulación: {inicio_sim}")
 
 # inicio_sim = pd.to_datetime('2024-12-26 19:00', utc=True)
-fin_sim = inicio_sim + pd.Timedelta(minutes = params['frecuencia_min'])
 
 #  0. DEFINIR PYTHONPATH (directorio raíz del repositorio)
 repo_path = os.getenv('PYTHONPATH') # Obtener el directorio del repositorio desde la variable de entorno (archivo ".env")
@@ -45,6 +44,8 @@ with open(f'PAQUETES/{experimento}/config_exp/config.json', 'r') as f:
         print("El archivo config.json está vacío.")
     else:
         params = json.loads(content)
+
+fin_sim = inicio_sim + pd.Timedelta(minutes = params['frecuencia_min'])
 
 # 2. ASIGNACIÓN PLUVIO CUENCA
 asignacion_pluvio_cuenca(inp_file = params['inp_base'],
