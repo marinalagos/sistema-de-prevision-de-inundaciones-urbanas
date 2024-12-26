@@ -13,5 +13,14 @@
 	"nodelist": "compute-0-[22-24]",
 	"cpupertask": 4,
 	"frecuencia_min": 30,
-	"save_rainfall_raw_data": true
+	"save_rainfall_raw_data": true,
+	"points_of_interest": {"SF_Mvideo":{"nombre_completo": "Aº San Francisco y Av. Montevideo",
+										"link_swmm": "channel50836"},
+						   "LP_Libano": {"nombre_completo": "Aº Las Piedras y Rep. del Líbano",
+						   				 "link_swmm": "channel16633"},
+						   "SF_Torre": {"nombre_completo":"Aº San Francisco y Dr. Emilio Torre",
+										"link_swmm": "channel3626"},
+						   "LP_Mverde": {"nombre_completo": "Aº Las Piedras y Av. Monteverde",
+										 "link_swmm": "channel16446"}
+						  }
 }
