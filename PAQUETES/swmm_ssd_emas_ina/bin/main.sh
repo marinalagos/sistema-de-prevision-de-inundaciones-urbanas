@@ -13,15 +13,17 @@ inicio_sim="${current_date}T${previous_hour}:00:00Z"
 job1_id=$(sbatch --parsable <<EOF
 #!/bin/bash
 #SBATCH --job-name=preprocesamiento
-#SBATCH --output=preprocesamiento.log
+#SBATCH --output=pre_%j_$inicio_sim.log
 #SBATCH --time=00:120:00
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=1G
 #SBATCH --nodelist=compute-0-[22-24]
+#SBATCH --nodes=1
 
 source /share/apps/anaconda3/bin/activate
 conda activate /share/apps/anaconda3/envs/swmm_env
 
+echo "$inicio_sim"
 # Exportar PYTHONPATH dentro del job
 export PYTHONPATH=$PYTHONPATH
 
@@ -35,17 +37,20 @@ job2_id=$(sbatch --parsable --dependency=afterok:$job1_id PAQUETES/swmm_ssd_emas
 echo "Ejecución del modelo enviada con Job ID: $job2_id"
 
 # Enviar el tercer trabajo: Postprocesamiento
-job3_id=$(sbatch --parsable <<EOF
+job3_id=$(sbatch --parsable --dependency=afterok:$job2_id <<EOF
 #!/bin/bash
 #SBATCH --job-name=postprocesamiento
-#SBATCH --output=postprocesamiento.log
+#SBATCH --output=post_%j_$inicio_sim.log
 #SBATCH --time=00:120:00
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=1G
 #SBATCH --nodelist=compute-0-[22-24]
+#SBATCH --nodes=1
 
 source /share/apps/anaconda3/bin/activate
 conda activate /share/apps/anaconda3/envs/swmm_env
+
+echo "$inicio_sim"
 python PAQUETES/swmm_ssd_emas_ina/bin/postprocesamiento.py --inicio_sim "$inicio_sim"
 EOF
 )
