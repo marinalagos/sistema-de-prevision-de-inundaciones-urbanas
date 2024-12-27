@@ -6,7 +6,6 @@ def create_slurm_file(path_slurm_file, path_swmm, pathdir_model, pathdir_out, jo
 #SBATCH --output={logfile}
 #SBATCH --time=192:00:00
 #SBATCH --nodelist={nodelist}
-#SBATCH --nodes=1
 
 srun {path_swmm} {pathdir_model}/model.inp {pathdir_out}/model.rpt {pathdir_out}/model.out
 """

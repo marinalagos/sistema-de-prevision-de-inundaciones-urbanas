@@ -18,7 +18,6 @@ job1_id=$(sbatch --parsable <<EOF
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=1G
 #SBATCH --nodelist=compute-0-[22-24]
-#SBATCH --nodes=1
 
 source /share/apps/anaconda3/bin/activate
 conda activate /share/apps/anaconda3/envs/swmm_env
@@ -45,7 +44,6 @@ job3_id=$(sbatch --parsable --dependency=afterok:$job2_id <<EOF
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=1G
 #SBATCH --nodelist=compute-0-[22-24]
-#SBATCH --nodes=1
 
 source /share/apps/anaconda3/bin/activate
 conda activate /share/apps/anaconda3/envs/swmm_env
