@@ -3,6 +3,7 @@ import pandas as pd
 import json
 import datetime
 import argparse
+import os 
 
 experimento = 'swmm_ssd_emas_ina'
 
