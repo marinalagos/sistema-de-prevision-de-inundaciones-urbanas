@@ -4,16 +4,15 @@
 export PYTHONPATH=$(grep PYTHONPATH .env | cut -d '=' -f2)
 
 # Definir el inicio de la simulación
-current_hour=$(date -u +"%H")
-previous_hour=$(printf "%02d" $((10#$current_hour - 1)))
-current_date=$(date -u +"%Y-%m-%d")
-inicio_sim="${current_date}T${previous_hour}:00:00Z"
+
+inicio_sim=$(date -u --date="1 hour ago" +"%Y-%m-%dT%H:00:00Z")
+inicio_sim_compacto=$(date -u --date="1 hour ago" +"%Y%m%d%H00")
 
 # Enviar el primer trabajo: Preprocesamiento
 job1_id=$(sbatch --parsable <<EOF
 #!/bin/bash
 #SBATCH --job-name=preprocesamiento
-#SBATCH --output=pre_%j_$inicio_sim.log
+#SBATCH --output=pre_%j_$inicio_sim_compacto.log
 #SBATCH --time=00:120:00
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=1G
@@ -32,14 +31,14 @@ EOF
 echo "Preprocesamiento enviado con Job ID: $job1_id"
 
 # Enviar el segundo trabajo: Ejecución del archivo run_swmm.sh (ya contiene requerimientos)
-job2_id=$(sbatch --parsable --dependency=afterok:$job1_id PAQUETES/swmm_ssd_emas_ina/bin/run_swmm.sh)
+job2_id=$(sbatch --parsable --dependency=afterok:$job1_id PAQUETES/swmm_ssd_emas_ina/bin/run_swmm_$inicio_sim_compacto.sh)
 echo "Ejecución del modelo enviada con Job ID: $job2_id"
 
 # Enviar el tercer trabajo: Postprocesamiento
 job3_id=$(sbatch --parsable --dependency=afterok:$job2_id <<EOF
 #!/bin/bash
 #SBATCH --job-name=postprocesamiento
-#SBATCH --output=post_%j_$inicio_sim.log
+#SBATCH --output=post_%j_$inicio_sim_compacto.log
 #SBATCH --time=00:120:00
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=1G
