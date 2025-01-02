@@ -29,10 +29,65 @@ python PAQUETES/swmm_ssd_emas_ina/bin/preprocesamiento.py --inicio_sim "$inicio_
 EOF
 )
 echo "Preprocesamiento enviado con Job ID: $job1_id"
+chmod 775 PAQUETES/swmm_ssd_emas_ina/bin/run_swmm_$inicio_sim_compacto.sh
 
-# Enviar el segundo trabajo: Ejecución del archivo run_swmm.sh (ya contiene requerimientos)
-job2_id=$(sbatch --parsable --dependency=afterok:$job1_id PAQUETES/swmm_ssd_emas_ina/bin/run_swmm_$inicio_sim_compacto.sh)
+
+# Enviar el segundo trabajo: Ejecución del archivo run_swmm.sh 
+
+job2_id=$(sbatch --parsable --dependency=afterok:$job1_id <<EOF
+#!/bin/bash
+#SBATCH --job-name=ejecucion_modelo_$inicio_sim_compacto
+#SBATCH --output=LOGS/ejecucion_modelo_%j_$inicio_sim_compacto.log
+#SBATCH --time=00:120:00
+#SBATCH --cpus-per-task=1
+#SBATCH --ntasks=1
+#SBATCH --mem=1G
+#SBATCH --nodelist=compute-0-[22-24]
+
+source /share/apps/anaconda3/bin/activate
+conda activate /share/apps/anaconda3/envs/swmm_env
+
+# Verificar que el archivo run_swmm.sh existe y tiene permisos
+echo "Verificando si el archivo run_swmm_$inicio_sim_compacto.sh existe..."
+if [ -f "PAQUETES/swmm_ssd_emas_ina/bin/run_swmm_$inicio_sim_compacto.sh" ]; then
+    echo "Archivo run_swmm_$inicio_sim_compacto.sh encontrado."
+else
+    echo "ERROR: No se encontró el archivo run_swmm_$inicio_sim_compacto.sh."
+    exit 1
+fi
+
+echo "Verificando permisos de ejecución del archivo run_swmm_$inicio_sim_compacto.sh..."
+ls -l PAQUETES/swmm_ssd_emas_ina/bin/run_swmm_$inicio_sim_compacto.sh
+
+# Agregar un comando para verificar la hora antes de ejecutar srun
+echo "Hora antes de ejecutar srun: $(date)"
+
+# Ejecutar srun para ejecutar el script run_swmm.sh
+echo "Ejecutando srun con el archivo run_swmm_$inicio_sim_compacto.sh..."
+srun PAQUETES/swmm_ssd_emas_ina/bin/run_swmm_$inicio_sim_compacto.sh
+
+# Agregar un comando para verificar la hora después de ejecutar srun
+echo "Hora después de ejecutar srun: $(date)"
+
+# Ejecutar srun para ejecutar el script run_swmm.sh
+echo "Ejecutando srun con el archivo run_swmm_$inicio_sim_compacto.sh..."
+srun PAQUETES/swmm_ssd_emas_ina/bin/run_swmm_$inicio_sim_compacto.sh
+
+# Agregar un comando para verificar la hora después de ejecutar srun
+echo "Hora después de ejecutar srun: $(date)"
+
+# Verificar si el srun terminó correctamente
+if [ $? -eq 0 ]; then
+    echo "srun ejecutado correctamente."
+else
+    echo "ERROR: srun falló."
+    exit 1
+fi
+
+EOF
+)
 echo "Ejecución del modelo enviada con Job ID: $job2_id"
+
 
 # Enviar el tercer trabajo: Postprocesamiento
 job3_id=$(sbatch --parsable --dependency=afterok:$job2_id <<EOF
