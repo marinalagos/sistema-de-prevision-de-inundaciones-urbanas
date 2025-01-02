@@ -105,5 +105,6 @@ create_slurm_file(path_slurm_file = f'PAQUETES/{experimento}/bin/run_swmm_{inici
                   # PENSAR SI HAY ALGUNA UBICACIÓN MEJOR PARA EL LOG
                   logfile = f'data/HIST/ASIM/{inicio_sim:%Y/%m/%d/%H%M%S}/{experimento}/log.txt',
                   nodelist = params['nodelist'],
-                  cpupertask = params['cpupertask']
+                  cpupertask = params['cpupertask'],
+                  errorfile = f'data/HIST/ASIM/{inicio_sim:%Y/%m/%d/%H%M%S}/{experimento}/error.txt'
                   )

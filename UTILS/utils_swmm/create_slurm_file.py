@@ -1,9 +1,10 @@
-def create_slurm_file(path_slurm_file, path_swmm, pathdir_model, pathdir_out, jobname, logfile, nodelist, cpupertask):
+def create_slurm_file(path_slurm_file, path_swmm, pathdir_model, pathdir_out, jobname, logfile, nodelist, cpupertask, errorfile):
     string = f"""#!/bin/bash
 #
 #SBATCH --cpus-per-task={cpupertask}
 #SBATCH --job-name={jobname}
 #SBATCH --output={logfile}
+#SBATCH --error={errorfile}
 #SBATCH --time=192:00:00
 #SBATCH --nodelist={nodelist}
 
