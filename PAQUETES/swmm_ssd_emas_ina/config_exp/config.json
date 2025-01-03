@@ -10,8 +10,6 @@
 	"interpolacion_espacial": "idw",
 	"potencia_idw": 2,
 	"swmmexe": "MODELS/swmm5_1-011-cluster",
-	"nodelist": "compute-0-[22-24]",
-	"cpupertask": 4,
 	"frecuencia_min": 60,
 	"save_rainfall_raw_data": true,
 	"points_of_interest": {"SF_Mvideo":{"nombre_completo": "Aº San Francisco y Av. Montevideo",
