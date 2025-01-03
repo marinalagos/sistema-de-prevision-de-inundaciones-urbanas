@@ -60,8 +60,6 @@ fi
 
 chmod 775 PAQUETES/swmm_ssd_emas_ina/bin/run_swmm_$inicio_sim_compacto.sh
 
-
-
 # Ejecutar srun para ejecutar el script run_swmm.sh
 echo "Ejecutando srun con el archivo run_swmm_$inicio_sim_compacto.sh..."
 srun PAQUETES/swmm_ssd_emas_ina/bin/run_swmm_$inicio_sim_compacto.sh
