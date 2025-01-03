@@ -12,11 +12,12 @@ inicio_sim_compacto=$(date -u --date="1 hour ago" +"%Y%m%d%H00")
 job1_id=$(sbatch --parsable <<EOF
 #!/bin/bash
 #SBATCH --job-name=preprocesamiento
-#SBATCH --output=pre_%j_$inicio_sim_compacto.log
-#SBATCH --time=00:120:00
 #SBATCH --cpus-per-task=1
+#SBATCH --ntasks=1
+#SBATCH --output=LOGS/pre_%j_$inicio_sim_compacto.log
+#SBATCH --time=00:120:00
 #SBATCH --mem=1G
-#SBATCH --nodelist=compute-0-[22-24]
+#SBATCH --constraint="128667MB"
 
 source /share/apps/anaconda3/bin/activate
 conda activate /share/apps/anaconda3/envs/swmm_env
@@ -29,7 +30,6 @@ python PAQUETES/swmm_ssd_emas_ina/bin/preprocesamiento.py --inicio_sim "$inicio_
 EOF
 )
 echo "Preprocesamiento enviado con Job ID: $job1_id"
-chmod 775 PAQUETES/swmm_ssd_emas_ina/bin/run_swmm_$inicio_sim_compacto.sh
 
 
 # Enviar el segundo trabajo: Ejecución del archivo run_swmm.sh 
@@ -39,10 +39,9 @@ job2_id=$(sbatch --parsable --dependency=afterok:$job1_id <<EOF
 #SBATCH --job-name=ejecucion_modelo_$inicio_sim_compacto
 #SBATCH --output=LOGS/ejecucion_modelo_%j_$inicio_sim_compacto.log
 #SBATCH --time=00:120:00
-#SBATCH --cpus-per-task=1
+#SBATCH --constraint="128667MB"                               
+#SBATCH --cpus-per-task=4
 #SBATCH --ntasks=1
-#SBATCH --mem=1G
-#SBATCH --nodelist=compute-0-[22-24]
 
 source /share/apps/anaconda3/bin/activate
 conda activate /share/apps/anaconda3/envs/swmm_env
@@ -56,25 +55,13 @@ else
     exit 1
 fi
 
-echo "Verificando permisos de ejecución del archivo run_swmm_$inicio_sim_compacto.sh..."
-ls -l PAQUETES/swmm_ssd_emas_ina/bin/run_swmm_$inicio_sim_compacto.sh
+chmod 775 PAQUETES/swmm_ssd_emas_ina/bin/run_swmm_$inicio_sim_compacto.sh
 
-# Agregar un comando para verificar la hora antes de ejecutar srun
-echo "Hora antes de ejecutar srun: $(date)"
+
 
 # Ejecutar srun para ejecutar el script run_swmm.sh
 echo "Ejecutando srun con el archivo run_swmm_$inicio_sim_compacto.sh..."
 srun PAQUETES/swmm_ssd_emas_ina/bin/run_swmm_$inicio_sim_compacto.sh
-
-# Agregar un comando para verificar la hora después de ejecutar srun
-echo "Hora después de ejecutar srun: $(date)"
-
-# Ejecutar srun para ejecutar el script run_swmm.sh
-echo "Ejecutando srun con el archivo run_swmm_$inicio_sim_compacto.sh..."
-srun PAQUETES/swmm_ssd_emas_ina/bin/run_swmm_$inicio_sim_compacto.sh
-
-# Agregar un comando para verificar la hora después de ejecutar srun
-echo "Hora después de ejecutar srun: $(date)"
 
 # Verificar si el srun terminó correctamente
 if [ $? -eq 0 ]; then
@@ -93,11 +80,12 @@ echo "Ejecución del modelo enviada con Job ID: $job2_id"
 job3_id=$(sbatch --parsable --dependency=afterok:$job2_id <<EOF
 #!/bin/bash
 #SBATCH --job-name=postprocesamiento
-#SBATCH --output=post_%j_$inicio_sim_compacto.log
+#SBATCH --output=LOGS/post_%j_$inicio_sim_compacto.log
 #SBATCH --time=00:120:00
+#SBATCH --constraint="128667MB"                               
 #SBATCH --cpus-per-task=1
-#SBATCH --mem=1G
-#SBATCH --nodelist=compute-0-[22-24]
+#SBATCH --ntasks=1
+#SBATCH --mem=3G
 
 source /share/apps/anaconda3/bin/activate
 conda activate /share/apps/anaconda3/envs/swmm_env
