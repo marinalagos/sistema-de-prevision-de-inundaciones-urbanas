@@ -3,6 +3,9 @@
 # Establecer PYTHONPATH desde .env
 export PYTHONPATH=$(grep PYTHONPATH .env | cut -d '=' -f2)
 
+# Eliminar archivos anteriores que no se van a volver a usar
+find PAQUETES/swmm_ssd_emas_ina/bin -type f -name "run_swmm_*.sh" -exec rm {} +
+
 # Definir el inicio de la simulación
 
 inicio_sim=$(date -u --date="1 hour ago" +"%Y-%m-%dT%H:00:00Z")
