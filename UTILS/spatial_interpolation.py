@@ -81,7 +81,7 @@ def thiessen(data, geoseries_data, geoseries_grid, epsg):
     cells_data = []
     for idx, row in gdf_grid.iterrows():
         id_data = str(row.nearest_id)
-        cells_data.append(data[id_data].rename(idx))
+        cells_data.append(data[int(id_data)].rename(idx))
 
     grid_data = pd.concat(cells_data, axis=1)
     return grid_data
