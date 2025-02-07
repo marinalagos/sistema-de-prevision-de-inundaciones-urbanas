@@ -60,9 +60,18 @@ fi
 
 chmod 775 PAQUETES/swmm_ssd_emas_ina/bin/run_swmm_$inicio_sim_compacto.sh
 
+echo "Verificando permisos de ejecución del archivo run_swmm_$inicio_sim_compacto.sh..."
+ls -l PAQUETES/swmm_ssd_emas_ina/bin/run_swmm_$inicio_sim_compacto.sh
+
+# Agregar un comando para verificar la hora antes de ejecutar srun
+echo "Hora antes de ejecutar srun: $(date)"
+
 # Ejecutar srun para ejecutar el script run_swmm.sh
 echo "Ejecutando srun con el archivo run_swmm_$inicio_sim_compacto.sh..."
 srun PAQUETES/swmm_ssd_emas_ina/bin/run_swmm_$inicio_sim_compacto.sh
+
+# Agregar un comando para verificar la hora después de ejecutar srun
+echo "Hora después de ejecutar srun: $(date)"
 
 # Verificar si el srun terminó correctamente
 if [ $? -eq 0 ]; then
