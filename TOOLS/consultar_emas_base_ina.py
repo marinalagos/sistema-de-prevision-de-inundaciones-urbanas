@@ -1,15 +1,3 @@
-"""
--------------------------------------------------------------------------------
-TOOL consultar_emas_base_ina
--------------------------------------------------------------------------------
-Realiza la consulta de precipitación a la base INA, indicando inicio, fin e ids
-de las estaciones. El dataframe resultado está expresado en mm/h.
-1) Realizar la consulta
-2) Preprocesamiento de los datos: identificar faltantes, convertir a intensidad
-y resamplear a intervalo deseado.
-3) Llevar los datos puntuales a una grilla (polígonos de Thiessen o IDW)
-"""
-
 import pandas as pd
 import requests
 import json
@@ -26,6 +14,15 @@ def consultar_emas_base_ina(
     params, # diccionario de config.json
     path_raw_data = False
     ):
+
+    """
+    Realiza la consulta de precipitación a la base INA, indicando inicio, fin e ids
+    de las estaciones. El dataframe resultado está expresado en mm/h.
+    1) Realizar la consulta
+    2) Preprocesamiento de los datos: identificar faltantes, convertir a intensidad
+    y resamplear a intervalo deseado.
+    3) Llevar los datos puntuales a una grilla (polígonos de Thiessen o IDW)
+    """
 
     # 1. CONSULTA A LA BASE DEL INA
 
