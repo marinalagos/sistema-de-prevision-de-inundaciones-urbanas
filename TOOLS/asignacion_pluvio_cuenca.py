@@ -1,15 +1,3 @@
-"""
--------------------------------------------------------------------------------
-TOOL asignacion_pluvio_cuenca
--------------------------------------------------------------------------------
-Toma las subcuencas de un .inp y la grilla de un .nc
-1) Realiza la asignación
-2) Crea un nuevo .inp modificando tabla de subcuencas y tabla de pluviómetros
-(o sobreescribe el original).
-3) Exporta un .csv con los nombres asignados a cada celda/pluviometro (ej.: 
-P34975_58175) y sus coordenadas.
-"""
-
 import pandas as pd
 import xarray as xr
 from shapely.geometry import Polygon, MultiPoint, Point
@@ -27,6 +15,14 @@ def asignacion_pluvio_cuenca(
     epsg_precipitacion, # Código EPSG del crs del archivo de precipitación (.nc)
     inp_file_modificado = False, # Ruta al archivo .inp a modificar. Si no se define, se sobrescribe el .inp original
     ):
+    """
+    Toma las subcuencas de un .inp y la grilla de un .nc
+    1) Realiza la asignación
+    2) Crea un nuevo .inp modificando tabla de subcuencas y tabla de pluviómetros
+    (o sobreescribe el original).
+    3) Exporta un .csv con los nombres asignados a cada celda/pluviometro (ej.: 
+    P34975_58175) y sus coordenadas.
+    """
 
     # 1. DEFINIR SISTEMAS DE COORDENADAS
     crs_SWMM = pyproj.CRS.from_epsg(epsg_SWMM) # CRS Posgar 2007 Faja 5 (código EPSG: 5347)
