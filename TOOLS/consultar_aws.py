@@ -1,8 +1,6 @@
 import s3fs
 import pandas as pd
-
-import s3fs
-import pandas as pd
+import xarray as xr
 
 # Parámetros del pronóstico
 DURACION_HH = 10  # Duración del pronóstico hidrológico-hidráulico en horas
@@ -18,6 +16,7 @@ BASE_PATH = 'smn-ar-wrf/DATA/WRF/DET/'
 
 # Tiempos de referencia
 now = pd.Timestamp.now(tz='utc')
+now = pd.Timestamp(year=2025, month=3, day=3, hour=00, tz='utc')
 fecha_limite = now - pd.Timedelta(hours=DURACION_WRF)
 start_date_wrf = pd.Timestamp(year=now.year, month=now.month, day=now.day, hour=now.hour, tz='utc')
 
@@ -76,17 +75,40 @@ else:
 # con una frecuencia de 10 minutos. Este archivo contiene 6 tiempos cuya validez va desde 
 # 12:00UTC hasta 12:50UTC.
 
-# ds_list = []
+ds_list = []
 
+files = sorted(archivos_esperados)
+for s3_file in files:
+    print(s3_file)
+    f = fs.open(s3_file)
+    ds_tmp = xr.open_dataset(f, decode_coords = 'all', engine = 'h5netcdf')
+    ds_list.append(ds_tmp)
 
-# files = fs.glob(f'{latest_folder}/WRFDETAR_10M_{START_DATE:%Y%m%d_%H}_*.nc')
-# for s3_file in files:
-#     print(s3_file)
-#     f = fs.open(s3_file)
-#     ds_tmp = xr.open_dataset(f, decode_coords = 'all', engine = 'h5netcdf')
-#     ds_list.append(ds_tmp)
-# if len(ds_list) == 0:
-#     time.sleep(600)
+ds = xr.combine_by_coords(ds_list, combine_attrs = 'drop_conflicts')
+ds1 = ds.where((ds.lon > -58.45) & (ds.lon < -58.22) & (ds.lat < -34.62) & (ds.lat > -34.93), drop=True)
 
-#     files = fs.ls(latest_folder)
-#     print(f'Archivos en {latest_folder}: {files}')
+dict_series = {}
+dict_coords = {}
+
+id = 0
+
+for y in ds1.y.values:
+  for x in ds1.x.values:
+
+    sel = ds1.sel(x=x, y=y)
+    longitud = float(sel['lon'].values)
+    latitud = float(sel['lat'].values)
+
+    str_lon = f'{(round(longitud*-10000,0)):.0f}'
+    str_lat = f'{(round(latitud*-10000,0)):.0f}'
+
+    name = f'P{str_lat}_{str_lon}'
+
+    serie_PP = pd.Series(index=sel['time'], data=sel['PP'], name=name)
+
+    dict_series[name] = serie_PP
+    dict_coords[name] = {'lon': longitud , 'lat': latitud}
+    id +=1
+
+df_coords = pd.DataFrame.from_dict(dict_coords, orient='index')
+df_pp = pd.DataFrame(dict_series)
