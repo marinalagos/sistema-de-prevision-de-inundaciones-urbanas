@@ -6,8 +6,8 @@ import xarray as xr
 # # now = pd.Timestamp(year=2025, month=3, day=3, hour=00, tz='utc')
 # fecha_inicio = pd.Timestamp(year=now.year, month=now.month, day=now.day, hour=now.hour, tz='utc')
 
-def consular_aws(duracion_PHH, duracion_PM, fecha_inicio, 
-                 minlat=-34.93, maxlat=-34.62, minlon=-58.45, maxlon=-58.45):
+def consultar_aws(duracion_PHH, duracion_PM, fecha_inicio, 
+                 minlat=-34.93, maxlat=-34.62, minlon=-58.45, maxlon=-58.22):
     """
     Consultar datos de WRF a través de Amazon Web Service 
     Inputs:
