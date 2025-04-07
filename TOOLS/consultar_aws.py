@@ -124,5 +124,6 @@ def consultar_aws(duracion_PHH, duracion_PM, fecha_inicio,
 
     df_coords = pd.DataFrame.from_dict(dict_coords, orient='index')
     df_pp = pd.DataFrame(dict_series)
+    df_pp.index = df_pp.index.round("1min")
     
     return df_coords, df_pp
