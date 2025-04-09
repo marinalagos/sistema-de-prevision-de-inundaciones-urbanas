@@ -24,10 +24,8 @@ inicio_sim = args.inicio_sim
 inicio_sim = pd.to_datetime(inicio_sim)
 print(f"Inicio simulación: {inicio_sim}")
 
-now = pd.Timestamp.now(tz='utc')
-inicio_sim = pd.Timestamp(year=now.year, month=now.month, day=now.day, hour=now.hour, tz='utc')
-
-
+# now = pd.Timestamp.now(tz='utc')
+# inicio_sim = pd.Timestamp(year=now.year, month=now.month, day=now.day, hour=now.hour, tz='utc')
 # inicio_sim = pd.to_datetime('2024-12-26 19:00', utc=True)
 
 #  0. DEFINIR PYTHONPATH (directorio raíz del repositorio)
