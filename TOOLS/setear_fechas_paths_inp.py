@@ -5,12 +5,12 @@ import os
 def setear_fechas_paths_inp(inicio_sim, 
                             fin_sim, 
                             inp_base_modificado, 
-                            file_path_HSin, 
-                            file_path_HSout,
-                            file_path_rainfall,                            
+                            filepath_HSin, 
+                            filepath_HSout,
+                            filepath_rainfall,                            
                             dt_precipitacion_minutos,
                             pformat,
-                            file_path_new_inp):
+                            filepath_new_inp):
     # inicio_sim = pd.to_datetime('2024-07-09 01:00', utc=True)
     # fin_sim = pd.to_datetime('2024-10-13 00:00', utc=True)
     # experimento = 'swmm_ssd_emas_ina'
@@ -27,9 +27,9 @@ def setear_fechas_paths_inp(inicio_sim,
                    "REPORTSTTIME": inicio_sim.strftime("%H:%M:%S"),
                    "ENDDATE": fin_sim.strftime("%m/%d/%Y"),
                    "ENDTIME": fin_sim.strftime("%H:%M:%S"),
-                   "RAINFALLFILEPATH": file_path_rainfall,
-                   "HOTSTARTIN": file_path_HSin, 
-                   "HOTSTARTOUT": file_path_HSout,
+                   "RAINFALLFILEPATH": filepath_rainfall,
+                   "HOTSTARTIN": filepath_HSin, 
+                   "HOTSTARTOUT": filepath_HSout,
                    "INTERVAL_MINUTES": interval_str,
                    "PFORMAT": pformat
                     }
@@ -37,12 +37,12 @@ def setear_fechas_paths_inp(inicio_sim,
                 #    "RAINFALLFILEPATH": f'data/HIST/PREP/{inicio_sim:%Y/%m/%d/%H%M%S}/{experimento}/p.txt',
 
     # path donde guardar el .inp
-    # file_path_new_inp = f'data/HIST/PREP/{inicio_sim:%Y/%m/%d/%H%M%S}/{experimento}/'
+    # filepath_new_inp = f'data/HIST/PREP/{inicio_sim:%Y/%m/%d/%H%M%S}/{experimento}/'
 
-    if not os.path.exists(file_path_new_inp): 
-        os.makedirs(file_path_new_inp) 
+    if not os.path.exists(filepath_new_inp): 
+        os.makedirs(filepath_new_inp) 
 
-    modify_textfile(file_path = inp_base_modificado,
+    modify_textfile(filepath = inp_base_modificado,
                     replacements = replacements,
-                    output_path = file_path_new_inp + '/model.inp',
+                    output_path = filepath_new_inp + '/model.inp',
                     stop_at_substring = "[SUBCATCHMENTS]")
