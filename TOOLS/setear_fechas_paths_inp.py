@@ -44,5 +44,5 @@ def setear_fechas_paths_inp(inicio_sim,
 
     modify_textfile(filepath = inp_base_modificado,
                     replacements = replacements,
-                    output_path = filepath_new_inp + '/model.inp',
+                    output_path = filepath_new_inp,
                     stop_at_substring = "[SUBCATCHMENTS]")
