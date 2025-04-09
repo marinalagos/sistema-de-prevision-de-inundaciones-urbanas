@@ -102,11 +102,11 @@ setear_fechas_paths_inp(inicio_sim = inicio_sim,
 create_slurm_file(path_slurm_file = f'PAQUETES/{experimento}/bin/run_swmm_{inicio_sim:%Y%m%d%H%M}.sh',
                   path_swmm = params['swmmexe'],
                   pathdir_model = f'data/HIST/PREP/{inicio_sim:%Y/%m/%d/%H%M%S}/{experimento}/',
-                  pathdir_out = f'data/HIST/ASIM/{inicio_sim:%Y/%m/%d/%H%M%S}/{experimento}/',
+                  pathdir_out = f'data/HIST/FCST/{inicio_sim:%Y/%m/%d/%H%M%S}/{experimento}/',
                   jobname = f'{experimento}_{inicio_sim:%Y%m%d%H%M}',
                   # PENSAR SI HAY ALGUNA UBICACIÓN MEJOR PARA EL LOG
-                  logfile = f'data/HIST/ASIM/{inicio_sim:%Y/%m/%d/%H%M%S}/{experimento}/log.txt',
+                  logfile = f'data/HIST/FCST/{inicio_sim:%Y/%m/%d/%H%M%S}/{experimento}/log.txt',
                   nodelist = params['nodelist'],
                   cpupertask = params['cpupertask'],
-                  errorfile = f'data/HIST/ASIM/{inicio_sim:%Y/%m/%d/%H%M%S}/{experimento}/error.txt'
+                  errorfile = f'data/HIST/FCST/{inicio_sim:%Y/%m/%d/%H%M%S}/{experimento}/error.txt'
                   )
