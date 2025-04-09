@@ -1,6 +1,6 @@
 {
 	"inp_base": "Carpeta_base_SWMM/model_base.inp",
-	"inp_modificado": "PAQUETES/swmm_ssd_wrf_ens_prono_10h/config_exp/model_base_prueba.inp",
+	"inp_modificado": "PAQUETES/swmm_ssd_wrf_det_prono_10h/config_exp/model_base_prueba.inp",
 	"epsg_SWMM": 5347,
 	"epsg_precipitacion": 4326,
 	"path_cell_coords": "Carpeta_base_SWMM/coordenadas_celdas.csv",
