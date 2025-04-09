@@ -23,7 +23,9 @@ def modificar_inp_base(
     # 1. DEFINIR SISTEMAS DE COORDENADAS
     crs_SWMM = pyproj.CRS.from_epsg(epsg_SWMM) # CRS Posgar 2007 Faja 5 (código EPSG: 5347)
     crs_precipitacion = pyproj.CRS.from_epsg(epsg_precipitacion) # WGS84 (código EPSG: 4326)
-    posgar2geo = pyproj.Transformer.from_crs(crs_SWMM, crs_precipitacion, always_xy=True) # Conversor de coordenadas
+    # posgar2geo = pyproj.Transformer.from_crs(crs_SWMM, crs_precipitacion, always_xy=True) # Conversor de coordenadas
+    # geo2posgar = pyproj.Transformer.from_crs(crs_precipitacion, crs_SWMM, always_xy=True) # Conversor de coordenadas
+
 
 
     # 2. EXTRACCIÓN DE CENTROIDES DE LOS POLÍGONOS DE SUBCUENCAS A PARTIR DEL .inp
@@ -48,7 +50,6 @@ def modificar_inp_base(
         # Si el índice es igual al subcuenca actual, va guardando las coordenadas
         if index == subc:
             xcoord, ycoord = float(row.xcoord), float(row.ycoord)
-            xcoord, ycoord = posgar2geo.transform(xcoord, ycoord)        
             coords.append((xcoord, ycoord))
         # Si no, cierra el polígono, calcula el centroide, y pasa a la siguiente subcuenca
         else:
@@ -56,98 +57,68 @@ def modificar_inp_base(
             centroid = polygon.centroid
             subc_centroid[subc] = centroid
 
+            subc = index
+            xcoord, ycoord = float(row.xcoord), float(row.ycoord)
+            coords = [(xcoord, ycoord)]
+
+
+
     # 3. GENERAR LOS DOS DATAFRAMES DE COORDENADAS (PLUVIÓMETROS Y SUBCUENCAS)
     # 3.a. PLUVIÓMETROS
     gdf_pluviometros = gpd.GeoDataFrame(df_coords,
                                         geometry = gpd.points_from_xy(df_coords.lon, df_coords.lat),
                                         crs = crs_precipitacion).drop(columns=['lon', 'lat'])
+    gdf_pluviometros = gdf_pluviometros.to_crs(crs_SWMM)
+
     # 3.b. SUBCUENCAS
     gdf_subcuencas = gpd.GeoDataFrame(index = list(subc_centroid.keys()),
-                                       geometry = list(subc_centroid.values()),
-                                       crs = crs_SWMM)
+                                      geometry = list(subc_centroid.values()),
+                                      crs = crs_SWMM)
     
 
 
+    # 4. ENCONTRAR PARA CADA SUBCUENCA EL PLUVIÓMETRO MÁS CERCANO   
+    resultados = []
+    # Iterar sobre cada subcuenca
+    for idx_sub, sub_geom in gdf_subcuencas.geometry.items():
+        # Calcular la distancia a todos los pluviómetros
+        distancias = gdf_pluviometros.distance(sub_geom)
+        
+        # Obtener el índice del pluviómetro más cercano
+        idx_pluvio_min = distancias.idxmin()
+        
+        # Guardar el resultado
+        resultados.append({
+            'subcuenca': idx_sub,
+            'pluviometro': idx_pluvio_min,
+        })
 
-if False:
-
-    subc = index
-    xcoord, ycoord = float(row.xcoord), float(row.ycoord)
-    xcoord, ycoord = posgar2geo.transform(xcoord, ycoord)        
-    coords = [(xcoord, ycoord)]
-
-    # Crea un MultiPoint a partir de los centroides
-    puntos = list(subc_centroid.values())
-    multi_point = MultiPoint(puntos)
-    # Obtiene los límites (min/max) de las coordenadas de los centroides
-    minlon, minlat, maxlon, maxlat = multi_point.bounds
-
-
-    # 3. EXTRACCIÓN DE CENTROIDES DE LAS CELDAS DE PRECIPITACIÓN A PARTIR DEL .nc
-    ds = xr.open_dataset(nc_file, decode_coords='all', engine='netcdf4')
-    ds1 = ds.where((ds.XLONG > minlon - .1) & (ds.XLONG < maxlon + .1) & 
-                (ds.XLAT > minlat - .1) & (ds.XLAT < maxlat + .1), 
-                drop=True)
-
-    lats = ds1.XLAT.values
-    lons = ds1.XLONG.values
-
-    cell_coords = {}
-
-    for lat in lats:
-        # Formatea la latitud en un string para usar como clave
-        str_lat = f'{(round(lat*-1000,0)):.0f}'
-        for lon in lons:
-            # Formatea la longitud en un string para usar como clave
-            str_lon = f'{(round(lon*-1000,0)):.0f}'
-            # Crea una clave única para la celda
-            cell = f'P{str_lat}_{str_lon}'
-            # Almacena las coordenadas de la celda en el diccionario
-            cell_coords[cell] = Point(lon, lat)
-
-    df_cell_coords = pd.DataFrame(cell_coords.items(), columns=['ID', 'Coordinates'])
-    df_cell_coords.to_csv(path_cell_coords, index=False)
-    df_coords
-
-
-    # 4. ASIGNACIÓN SUBCUENCA-CELDA
-    coordenadas1 = [p.coords[:][0] for p in subc_centroid.values()]
-    coordenadas2 = [p.coords[:][0] for p in cell_coords.values()]
-
-    kdtree = KDTree(coordenadas2) # Crea un KDTree a partir de las coordenadas de las celdas
-
-    # Encuentra el punto más cercano en las celdas para cada centroide de subcuencas
-    puntos_mas_cercanos = {}
-    asignacion = {}
-    for clave1, coordenadas1 in zip(subc_centroid.keys(), coordenadas1):
-        _, indice = kdtree.query(coordenadas1)  # Busca el índice del punto más cercano en el KDTree
-        punto_mas_cercano = cell_coords[list(cell_coords.keys())[indice]]   # Obtiene el punto más cercano de las celdas
-        puntos_mas_cercanos[clave1] = punto_mas_cercano
-        asignacion[clave1] = list(cell_coords.keys())[indice]
-
-    # Crea un DataFrame a partir del diccionario de asignación
-    df_sub_cell = pd.DataFrame.from_dict(asignacion, orient='index')
+    # Convertir los resultados en un DataFrame
+    df_asignacion = pd.DataFrame(resultados).set_index('subcuenca')
 
 
 
     # 5. MODIFICACIÓN DE TABLA DE PLUVIOMETROS EN EL ARCHIVO .inp
-
+    # Extracción de la tabla de pluviometros del archivo .inp
     inicio = lines.index('[RAINGAGES]\n') + 3
     fin = lines.index('[SUBCATCHMENTS]\n') -1
 
-    cell_names = df_sub_cell[0].unique()
+    # Armar tabla nueva
+    pluvio_names = df_asignacion.pluviometro.unique()
     df_rainfall = pd.DataFrame()
-    df_rainfall['Name'] = cell_names
-    df_rainfall['Format'] = 'INTENSITY'
+    df_rainfall['Name'] = pluvio_names
+    df_rainfall['Format'] = 'PFORMAT'
     df_rainfall['Interval'] = 'INTERVAL_MINUTES'
     df_rainfall['SCF'] = '1.0'
     df_rainfall['Source'] = 'FILE'
     df_rainfall['filename'] = f'"RAINFALLFILEPATH"'
-    df_rainfall['raingage'] = cell_names
+    df_rainfall['raingage'] = pluvio_names
     df_rainfall['unit'] = 'MM'
 
+    # Generar nuevo string
     str_raingages = df_rainfall.to_string(index=False, header=False, justify='left')
 
+    # Incorporar líneas nuevas
     lines = lines[:inicio] + [str_raingages] + ['\n'] + lines[fin:]
 
 
@@ -161,17 +132,19 @@ if False:
     df_subcuencas = pd.DataFrame([i.split() for i in lines_subcuencas], columns=['Name', 'RainGage', 'Outlet', 'Area', 'Imperv', 'Width', 'Slope', 'CurbLen'])
     df_subcuencas = df_subcuencas.set_index('Name')
 
-    # Cruzar con el dataframe de asignación subcuenca-celda
-    df_subcuencas = pd.merge(df_subcuencas, df_sub_cell,
-                            right_index = True, left_index = True,
-                            how = 'left', sort = False)
+    # Cruzar con el dataframe de asignación subcuenca-pluviometro
+    df_subcuencas = pd.merge(df_subcuencas, df_asignacion,
+                             right_index = True, left_index = True,
+                             how = 'left', sort = False)
 
-    df_subcuencas[0] = df_subcuencas[0].fillna(df_sub_cell.values[0][0]) # Para las celdas sin área, no hay celda asociada. En esos casos, se asigna una celda arbitraria (la primera de la lista)
-    df_subcuencas['RainGage'] = df_subcuencas[0]
-    df_subcuencas = df_subcuencas.drop(columns=[0])
+    df_subcuencas['pluviometro'] = df_subcuencas['pluviometro'].fillna(df_asignacion.values[0][0]) # Para las celdas sin área, no hay celda asociada. En esos casos, se asigna una celda arbitraria (la primera de la lista)
+    df_subcuencas['RainGage'] = df_subcuencas['pluviometro']
+    df_subcuencas = df_subcuencas.drop(columns=['pluviometro'])
 
+    # Generar nuevo string
     str_subcatchments = df_subcuencas.to_string(index=True, header=False, index_names=False, justify='left')
 
+    # Incorporar líneas nuevas
     lines = lines[:inicio] + [str_subcatchments] + ['\n'] + lines[fin:]
 
 
