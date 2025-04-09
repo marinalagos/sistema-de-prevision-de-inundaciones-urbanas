@@ -1,12 +1,7 @@
 import pandas as pd
-import xarray as xr
-from shapely.geometry import Polygon, MultiPoint, Point
+from shapely.geometry import Polygon
 import pyproj
-from scipy.spatial import KDTree
-from glob import glob
 import geopandas as gpd
-import argparse
-import os
 
 def modificar_inp_base(
     inp_file, # Ruta al archivo .inp a modificar
