@@ -42,7 +42,7 @@ def setear_fechas_paths_inp(inicio_sim,
     if not os.path.exists(filepath_new_inp): 
         os.makedirs(filepath_new_inp) 
 
-    modify_textfile(filepath = inp_base_modificado,
+    modify_textfile(file_path = inp_base_modificado,
                     replacements = replacements,
                     output_path = filepath_new_inp,
                     stop_at_substring = "[SUBCATCHMENTS]")
