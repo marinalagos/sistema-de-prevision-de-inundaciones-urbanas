@@ -7,6 +7,8 @@
 	"dt_precipitacion_minutos": 10,
 	"pformat": "VOLUME",
 	"swmmexe": "MODELS/swmm5_1-011-cluster",
+	"nodelist": "compute-0-[22-24]",
+	"cpupertask": 4,
 	"frecuencia_min": 600,
 	"save_rainfall_raw_data": true,
 	"points_of_interest": {"SF_Mvideo":{"nombre_completo": "Aº San Francisco y Av. Montevideo",
