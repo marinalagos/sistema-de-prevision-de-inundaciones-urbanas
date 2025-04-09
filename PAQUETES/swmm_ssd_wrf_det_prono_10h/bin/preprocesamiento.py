@@ -13,7 +13,7 @@ from UTILS.utils_swmm.create_slurm_file import create_slurm_file
 import pandas as pd
 import argparse
 
-experimento = 'swmm_ssd_wrf_ens_prono_10h'
+experimento = 'swmm_ssd_wrf_det_prono_10h'
 
 #  0. DEFINIR LA FECHA
 
