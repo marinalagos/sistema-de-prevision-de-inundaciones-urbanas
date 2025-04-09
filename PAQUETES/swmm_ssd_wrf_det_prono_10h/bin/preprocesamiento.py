@@ -93,7 +93,7 @@ setear_fechas_paths_inp(inicio_sim = inicio_sim,
                         filepath_rainfall = filepath_rainfall,
                         dt_precipitacion_minutos = params['dt_precipitacion_minutos'],
                         pformat = params['pformat'],
-                        filepath_new_inp = f'data/HIST/PREP/{inicio_sim:%Y/%m/%d/%H%M%S}/{experimento}/model.inp'
+                        dirpath_new_inp = f'data/HIST/PREP/{inicio_sim:%Y/%m/%d/%H%M%S}/{experimento}'
                         )
 
 

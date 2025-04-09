@@ -10,7 +10,7 @@ def setear_fechas_paths_inp(inicio_sim,
                             filepath_rainfall,                            
                             dt_precipitacion_minutos,
                             pformat,
-                            filepath_new_inp):
+                            dirpath_new_inp):
     # inicio_sim = pd.to_datetime('2024-07-09 01:00', utc=True)
     # fin_sim = pd.to_datetime('2024-10-13 00:00', utc=True)
     # experimento = 'swmm_ssd_emas_ina'
@@ -39,10 +39,10 @@ def setear_fechas_paths_inp(inicio_sim,
     # path donde guardar el .inp
     # filepath_new_inp = f'data/HIST/PREP/{inicio_sim:%Y/%m/%d/%H%M%S}/{experimento}/'
 
-    if not os.path.exists(filepath_new_inp): 
-        os.makedirs(filepath_new_inp) 
+    if not os.path.exists(dirpath_new_inp): 
+        os.makedirs(dirpath_new_inp) 
 
     modify_textfile(file_path = inp_base_modificado,
                     replacements = replacements,
-                    output_path = filepath_new_inp,
+                    output_path = f'{dirpath_new_inp}/model.inp',
                     stop_at_substring = "[SUBCATCHMENTS]")
