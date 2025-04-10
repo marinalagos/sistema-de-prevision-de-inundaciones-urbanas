@@ -12,6 +12,7 @@ import UTILS.spatial_interpolation as spint
 import pandas as pd
 import argparse
 import geopandas as gpd
+from shapely import wkt
 
 experimento = 'swmm_ssd_emas_ina_v2'
 
@@ -60,6 +61,12 @@ df_coords, df_pp = consultar_base_ina(inicio_sim = inicio_sim,
 gdf_pluvios = gpd.GeoDataFrame(df_coords, 
                                geometry=gpd.points_from_xy(df_coords.lon, df_coords.lat), 
                                crs='EPSG:4326')
+
+df_coords_grid = pd.read_csv(params['path_cell_coords'], index_col=0)
+
+gdf_grid = gpd.GeoDataFrame(df_coords_grid, 
+                            geometry=gpd.points_from_xy(df_coords_grid.lon, df_coords_grid.lat), 
+                            crs='EPSG:4326')
 
 df_pp_grid = spint.idw(data = df_pp,
                        geoseries_data = gdf_pluvios,
