@@ -11,6 +11,7 @@ from UTILS.utils_swmm.create_slurm_file import create_slurm_file
 import UTILS.spatial_interpolation as spint
 import pandas as pd
 import argparse
+import geopandas as gpd
 
 experimento = 'swmm_ssd_emas_ina_v2'
 
@@ -56,6 +57,10 @@ df_coords, df_pp = consultar_base_ina(inicio_sim = inicio_sim,
                                       )
 
 # 2.b. INTERPOLACIÓN IDW (sin este paso se aplica Thiessen por defecto)
+gdf_pluvios = gpd.GeoDataFrame(df_coords, 
+                               geometry=gpd.points_from_xy(df_coords.lon, df_coords.lat), 
+                               crs='EPSG:4326')
+
 df_pp_grid = spint.idw(data = df_pp,
                        geoseries_data = gdf_pluvios,
                        geoseries_grid = gdf_grid,
