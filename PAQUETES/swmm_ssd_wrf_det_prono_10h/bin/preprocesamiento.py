@@ -2,8 +2,6 @@
 
 import os
 import json
-from glob import glob
-from TOOLS.asignacion_pluvio_cuenca import asignacion_pluvio_cuenca
 from TOOLS.consultar_aws import consultar_aws
 from TOOLS.modificar_inp_base import modificar_inp_base
 from TOOLS.setear_fechas_paths_inp import setear_fechas_paths_inp
