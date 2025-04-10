@@ -1,0 +1,25 @@
+{
+	"inp_base": "Carpeta_base_SWMM/model_base.inp",
+	"nc_grid": "Carpeta_base_SWMM/WRF_PP_201910110400_SSD_fcst_M0001.nc",
+	"inp_modificado": "PAQUETES/swmm_ssd_emas_ina_v2/config_exp/model_base_prueba.inp",
+	"epsg_SWMM": 5347,
+	"epsg_precipitacion": 4326,
+	"path_cell_coords": "Carpeta_base_SWMM/coordenadas_celdas.csv",
+	"ids_EMAs_consultadas": [3281, 3282, 3283, 3284, 3285, 3286, 3287, 3288, 3289, 3290, 3291, 3292, 3293, 3294, 3295, 3302, 3304, 3305, 2867, 2868, 2869, 2870, 3955, 3609, 3766, 3921, 3297, 3298, 3301, 3299, 3300],
+	"dt_precipitacion_minutos": 10,
+	"pformat": "INTENSITY",
+	"interpolacion_espacial": "idw",
+	"potencia_idw": 2,
+	"swmmexe": "MODELS/swmm5_1-011-cluster",
+	"frecuencia_min": 60,
+	"save_rainfall_raw_data": true,
+	"points_of_interest": {"SF_Mvideo":{"nombre_completo": "Aº San Francisco y Av. Montevideo",
+										"link_swmm": "channel50836"},
+						   "LP_Libano": {"nombre_completo": "Aº Las Piedras y Rep. del Líbano",
+						   				 "link_swmm": "channel16633"},
+						   "SF_Torre": {"nombre_completo":"Aº San Francisco y Dr. Emilio Torre",
+										"link_swmm": "channel3626"},
+						   "LP_Mverde": {"nombre_completo": "Aº Las Piedras y Av. Monteverde",
+										 "link_swmm": "channel16446"}
+						  }
+}
