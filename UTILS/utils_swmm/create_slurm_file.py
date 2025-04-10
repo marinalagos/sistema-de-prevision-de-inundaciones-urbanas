@@ -1,4 +1,4 @@
-def create_slurm_file(path_slurm_file, path_swmm, pathdir_model, pathdir_out, jobname, logfile, nodelist, cpupertask, errorfile):
+def create_slurm_file(path_slurm_file, path_swmm, pathdir_model, pathdir_out):
     string = f"""#!/bin/bash
 
 pwd
