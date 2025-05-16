@@ -39,8 +39,8 @@ for poi in points_of_interest:
     # df_sim = stb.extract(f"{swmm_run_path}/model.out", f"link,{link},Flow_depth")
     nivel = data['sensores'][poi]['observaciones']['Flow_depth']
     df_sim = pd.Series(nivel)
-    df_sim = df_sim.tz_localize('utc')
-    resultados[poi]['sim'] = df_sim.rename(columns={df_sim.columns[0]: 'sim'})
+    df_sim.index = pd.to_datetime(df_sim.index)
+    resultados[poi]['sim'] = df_sim.rename('sim')
 
     fecha_inicio = df_sim.index[0]
     fecha_fin = df_sim.index[-1]
@@ -59,7 +59,7 @@ for poi in points_of_interest:
                                                 site_id = id_api,
                                                 start_date = fecha_inicio.tz_convert('America/Buenos_Aires'),
                                                 end_date = fecha_fin.tz_convert('America/Buenos_Aires'))
-            if df_obs == True:
+            if not df_obs.empty:
                 df_obs = df_obs.set_index(pd.to_datetime(df_obs['hora']))
                 if "cero_api_anterior" in points_of_interest[poi]:
                     df_obs['nivel'] = df_obs.nivel - points_of_interest[poi]["cero_api_anterior"]
@@ -92,9 +92,9 @@ for poi in points_of_interest:
     
     print(df_obs)
 
-figs_path = f'{swmm_run_path}/figs'
-if not os.path.isdir(figs_path): 
-    os.makedirs(figs_path)
+# figs_path = f'{swmm_run_path}/figs'
+# if not os.path.isdir(figs_path): 
+#     os.makedirs(figs_path)
 
 for poi in points_of_interest:
     fig, ax = plt.subplots()
@@ -110,6 +110,6 @@ for poi in points_of_interest:
     plt.xticks(rotation=90)  # Rotar para evitar superposición
     plt.ylim(-0.25, 3.25)
     plt.tight_layout()
-    plt.savefig(f'{figs_path}/{poi}.png')
+    # plt.savefig(f'{figs_path}/{poi}.png')
 
     
